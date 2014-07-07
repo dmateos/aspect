@@ -8,9 +8,18 @@ aspect::GLProgram::GLProgram(std::string vshader, std::string fshader) {
   if((this->fshader = make_shader(fshader, GL_FRAGMENT_SHADER)) == -1) {
     std::cout << "could not load fshader " << fshader << std::endl;
   }
+  //todo EXCEPTIONS
+
+  if((this->program = make_program(this->fshader, this->vshader)) == -1) {
+    std::cout << "could not make program" << std::endl;
+  }
 }
 
-GLint aspect::GLProgram::make_shader(std::string path, GLenum stype) {
+void aspect::GLProgram::use() {
+  glUseProgram(this->program);
+}
+
+GLuint aspect::GLProgram::make_shader(std::string path, GLenum stype) {
   int length;
   const char *c_str;
   GLint shader_ok;

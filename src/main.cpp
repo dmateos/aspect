@@ -36,10 +36,32 @@ int main(int argc, char **argv) {
   print_gl_stats();
 
   aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
+  program.use();
+
+  GLfloat vertexData[] = {
+    0.0f, 0.8f, 0.0f,
+    -0.8f,-0.8f, 0.0f,
+    0.8f,-0.8f, 0.0f,
+  };
+
+  GLuint vao;
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+
+  GLuint vbo;
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

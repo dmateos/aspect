@@ -9,11 +9,13 @@ namespace aspect {
   class GLProgram {
     private:
       GLuint vshader, fshader;
+      GLint program;
 
-      GLint make_shader(std::string path, GLenum stype);
+      GLuint make_shader(std::string path, GLenum stype);
       GLint make_program(GLint vshader, GLint fshader);
     public:
       GLProgram(std::string vshader, std::string fshader);
+      void use();
   };
 };
 
