@@ -16,18 +16,20 @@ GLint aspect::GLProgram::make_shader(std::string path, GLenum stype) {
   GLint shader_ok;
   GLuint shader = glCreateShader(stype);
 
+  /* Load the shader from disk into a string. */
   std::ifstream ifs(path);
   std::string data((std::istreambuf_iterator<GLchar>(ifs)),
                     (std::istreambuf_iterator<GLchar>()));
 
+  /* GL doesnt know what a c++ string is */
   length = data.length();
-
   c_str = data.c_str();
+
   glShaderSource(shader, 1, &c_str, &length);
   glCompileShader(shader);
 
+  /* Check for compile issues. */
   glGetShaderiv(shader, GL_COMPILE_STATUS, &shader_ok);
-
   if(!shader_ok) {
     std::cout << path << "did not compile" << std::endl;
     glDeleteShader(shader);
@@ -40,12 +42,13 @@ GLint aspect::GLProgram::make_shader(std::string path, GLenum stype) {
 GLint aspect::GLProgram::make_program(GLint vshader, GLint fshader) {
   GLint program_ok;
   GLint shader_program = glCreateProgram();
+
   glAttachShader(shader_program, vshader);
   glAttachShader(shader_program, fshader);
   glLinkProgram(shader_program);
 
+  /* Did it work? */
   glGetProgramiv(shader_program, GL_LINK_STATUS, &program_ok);
-
   if(!program_ok) {
     std::cout << "program did not compile" << std::endl;
     return -1;
