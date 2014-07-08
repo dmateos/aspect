@@ -16,6 +16,8 @@ namespace aspect {
     public:
       GLProgram(std::string vshader, std::string fshader);
       void use();
+      GLint get_attrib(std::string attrib_name);
+      GLint get_uniform(std::string attrib_name);
   };
 };
 

@@ -35,14 +35,13 @@ int main(int argc, char **argv) {
 
   print_gl_stats();
 
-  aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
-  program.use();
-
   GLfloat vertexData[] = {
     0.0f, 0.8f, 0.0f,
     -0.8f,-0.8f, 0.0f,
     0.8f,-0.8f, 0.0f,
   };
+
+  aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
 
   GLuint vao;
   glGenVertexArrays(1, &vao);
@@ -54,8 +53,14 @@ int main(int argc, char **argv) {
 
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  glEnableVertexAttribArray(program.get_attrib("vp"));
+  glVertexAttribPointer(program.get_attrib("vp"), 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+
+  program.use();
+  glBindVertexArray(vao);
 
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

@@ -19,6 +19,16 @@ void aspect::GLProgram::use() {
   glUseProgram(this->program);
 }
 
+GLint aspect::GLProgram::get_attrib(std::string attrib_name) {
+  GLint attrib = glGetAttribLocation(this->program, attrib_name.c_str());
+  return attrib;
+}
+
+GLint aspect::GLProgram::get_uniform(std::string attrib_name) {
+  GLint attrib = glGetUniformLocation(this->program, attrib_name.c_str());
+  return attrib;
+}
+
 GLuint aspect::GLProgram::make_shader(std::string path, GLenum stype) {
   int length;
   const char *c_str;
