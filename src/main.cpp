@@ -41,6 +41,13 @@ int main(int argc, char **argv) {
     0.8f,-0.8f, 0.0f,
   };
 
+  glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+  glm::mat4 view = glm::lookAt(
+    glm::vec3(0.0f ,0.0f, 10.0f),
+    glm::vec3(0.0f, 0.0f, 0.0f),
+    glm::vec3(0.0f, 1.0f, 0.0f)
+  );
+
   aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
 
   GLuint vao;
@@ -66,6 +73,7 @@ int main(int argc, char **argv) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glUniformMatrix4fv(program.get_uniform("transform"), 1, GL_FALSE, glm::value_ptr(projection * view));
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(window);

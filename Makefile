@@ -1,6 +1,7 @@
 client_objects = \
 	src/main.o \
 	src/gl_program.o \
+	src/camera.o \
 
 client_flags = -lglfw3 -lglew -lassimp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 
@@ -15,6 +16,9 @@ src/main.o: src/main.cpp
 
 src/gl_program.o: src/gl_program.cpp
 	$(CXX) -c -o $@ src/gl_program.cpp
+
+src/camera.o: src/camera.cpp
+	$(CXX) -c -o $@ src/camera.cpp
 
 clean:
 	rm -rf src/*.o aspect
