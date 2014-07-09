@@ -12,5 +12,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "gl_program.h"
+#include "camera.h"
 
 #endif
