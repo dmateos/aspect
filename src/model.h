@@ -17,7 +17,12 @@ namespace aspect {
   };
 
   class ModelInstance {
-  
+    public:
+      ModelInstance(aspect::ModelAsset *asset);
+      void render();
+
+    private:
+      glm::mat4 translation;
   };
 }
 #endif

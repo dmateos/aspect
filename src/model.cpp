@@ -21,3 +21,11 @@ aspect::ModelAsset::ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program)
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 }
+
+aspect::ModelInstance::ModelInstance(aspect::ModelAsset *asset) {
+
+}
+
+void aspect::ModelInstance::render() {
+
+}

@@ -11,8 +11,4 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "gl_program.h"
-#include "camera.h"
-#include "mesh.h"
-
 #endif
