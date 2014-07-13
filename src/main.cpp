@@ -40,14 +40,22 @@ int main(int argc, char **argv) {
   aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
   aspect::Camera camera;
   aspect::Mesh mesh("models/monkey.dae");
+  aspect::Mesh floor;
 
-  GLuint vao;
-  glGenVertexArrays(1, &vao);
-  glBindVertexArray(vao);
+  floor.add_vertex(-1.0f,-1.0f,-1.0f);
+  floor.add_vertex( 1.0f,-1.0f,-1.0f);
+  floor.add_vertex(-1.0f,-1.0f, 1.0f);
+  floor.add_vertex(1.0f,-1.0f,-1.0f);
+  floor.add_vertex(1.0f,-1.0f, 1.0f);
+  floor.add_vertex(-1.0f,-1.0f, 1.0f);
 
-  GLuint vbo;
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  GLuint vao[2];
+  glGenVertexArrays(1, &vao[0]);
+  glBindVertexArray(vao[0]);
+
+  GLuint vbo[2];
+  glGenBuffers(1, &vbo[0]);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 
   glBufferData(GL_ARRAY_BUFFER, mesh.verticies_count * 3 * sizeof(float), &mesh.verticies[0], GL_STATIC_DRAW);
 
@@ -58,7 +66,7 @@ int main(int argc, char **argv) {
   glBindVertexArray(0);
 
   program.use();
-  glBindVertexArray(vao);
+  glBindVertexArray(vao[0]);
 
 //  camera.position_x(3.0f);
 //  camera.position_y(3.0f);

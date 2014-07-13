@@ -51,3 +51,14 @@ aspect::Mesh::Mesh(std::string file_name) {
     this->verticies_count = g_point_count;
     aiReleaseImport(scene);
 }
+
+aspect::Mesh::Mesh() {
+
+}
+
+void aspect::Mesh::add_vertex(float x, float y, float z) {
+  this->verticies.push_back(x); 
+  this->verticies.push_back(y); 
+  this->verticies.push_back(z); 
+  this->verticies_count += 3;
+}
