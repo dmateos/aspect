@@ -11,6 +11,7 @@ void print_gl_stats() {
 int main(int argc, char **argv) {
   GLFWwindow *window;
 
+  /* Setup all the opengl crap. */
   if(!glfwInit()) {
     std::cout << "could not start glfw3" << std::endl;
     return 1;
@@ -35,14 +36,10 @@ int main(int argc, char **argv) {
 
   print_gl_stats();
 
-  GLfloat vertexData[] = {
-    0.0f, 0.8f, 0.0f,
-    -0.8f,-0.8f, 0.0f,
-    0.8f,-0.8f, 0.0f,
-  };
-
+  /* Load our objects. */
   aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
   aspect::Camera camera;
+  aspect::Mesh mesh("models/monkey.dae");
 
   GLuint vao;
   glGenVertexArrays(1, &vao);
@@ -52,7 +49,7 @@ int main(int argc, char **argv) {
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, mesh.verticies_count * 3 * sizeof(float), &mesh.verticies[0], GL_STATIC_DRAW);
 
   glEnableVertexAttribArray(program.get_attrib("vp"));
   glVertexAttribPointer(program.get_attrib("vp"), 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -63,14 +60,14 @@ int main(int argc, char **argv) {
   program.use();
   glBindVertexArray(vao);
 
-  camera.position_x(3.0f);
-//  camera.yaw(10.0f);
+//  camera.position_x(3.0f);
+//  camera.position_y(3.0f);
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUniformMatrix4fv(program.get_uniform("transform"), 1, GL_FALSE, glm::value_ptr(camera.matrix()));
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, mesh.verticies_count);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

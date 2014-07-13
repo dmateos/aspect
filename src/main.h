@@ -13,5 +13,6 @@
 
 #include "gl_program.h"
 #include "camera.h"
+#include "mesh.h"
 
 #endif
