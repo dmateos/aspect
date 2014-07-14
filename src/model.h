@@ -8,21 +8,23 @@
 namespace aspect {
   class ModelAsset {
     public:
+      aspect::GLProgram *program;
+      aspect::Mesh *mesh;
+      GLuint vbo, vao;
+
       ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program);
 
     private:
-      aspect::Mesh *mesh;
-      aspect::GLProgram *program;
-      GLuint vbo, vao;
   };
 
   class ModelInstance {
     public:
+      aspect::ModelAsset *asset;
+      glm::mat4 transform;
+
       ModelInstance(aspect::ModelAsset *asset);
-      void render();
 
     private:
-      glm::mat4 translation;
   };
 }
 #endif

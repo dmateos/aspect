@@ -47,46 +47,49 @@ int main(int argc, char **argv) {
   aspect::Mesh monkey_mesh("models/monkey.dae");
   aspect::Mesh floor_mesh;
 
-  floor_mesh.add_vertex(-1.0f,-1.0f,-1.0f);
-  floor_mesh.add_vertex( 1.0f,-1.0f,-1.0f);
-  floor_mesh.add_vertex(-1.0f,-1.0f, 1.0f);
-  floor_mesh.add_vertex(1.0f,-1.0f,-1.0f);
-  floor_mesh.add_vertex(1.0f,-1.0f, 1.0f);
-  floor_mesh.add_vertex(-1.0f,-1.0f, 1.0f);
+  floor_mesh.add_vertex(-10.0f,-5.0f,-10.0f);
+  floor_mesh.add_vertex( 10.0f,-5.0f,-10.0f);
+  floor_mesh.add_vertex(-10.0f,-5.0f, 10.0f);
+  floor_mesh.add_vertex(10.0f,-5.0f,-10.0f);
+  floor_mesh.add_vertex(10.0f,-5.0f, 10.0f);
+  floor_mesh.add_vertex(-10.0f,-5.0f, 10.0f);
 
   aspect::ModelAsset monkey_asset(&monkey_mesh, &program);
-  aspect::ModelAsset floor_asset(&monkey_mesh, &program);
+  aspect::ModelAsset floor_asset(&floor_mesh, &program);
 
+  std::vector<aspect::ModelInstance*> instances;
   aspect::ModelInstance monkey_instance(&monkey_asset);
   aspect::ModelInstance floor_instance(&floor_asset);
 
-  GLuint vao[2];
-  glGenVertexArrays(1, &vao[0]);
-  glBindVertexArray(vao[0]);
-
-  GLuint vbo[2];
-  glGenBuffers(1, &vbo[0]);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-
-  glBufferData(GL_ARRAY_BUFFER, monkey_mesh.verticies_count * 3 * sizeof(float), &monkey_mesh.verticies[0], GL_STATIC_DRAW);
-
-  glEnableVertexAttribArray(program.get_attrib("vp"));
-  glVertexAttribPointer(program.get_attrib("vp"), 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
+  instances.push_back(&monkey_instance);
+  //instances.push_back(&floor_instance);
 
   program.use();
-  glBindVertexArray(vao[0]);
 
 //  camera.position_x(3.0f);
 //  camera.position_y(3.0f);
+//  camera.pitch(2.0f);
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glUniformMatrix4fv(program.get_uniform("transform"), 1, GL_FALSE, glm::value_ptr(camera.matrix()));
-    glDrawArrays(GL_TRIANGLES, 0, monkey_mesh.verticies_count);
+    for(std::vector<aspect::ModelInstance*>::iterator it = instances.begin();
+        it != instances.end(); it++) {
+        aspect::ModelInstance *model = *it;
+
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+        model->transform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+        model->asset->program->use();
+        model->asset->program->set_uniform("transform", model->transform);
+        model->asset->program->set_uniform("camera", camera.matrix());
+
+        glBindVertexArray(model->asset->vao);
+        glDrawArrays(GL_TRIANGLES, 0, model->asset->mesh->verticies_count);
+
+        glBindVertexArray(0);
+    }
+
 
     glfwSwapBuffers(window);
     glfwPollEvents();

@@ -29,6 +29,13 @@ GLint aspect::GLProgram::get_uniform(std::string attrib_name) {
   return attrib;
 }
 
+void aspect::GLProgram::set_attrib(std::string attrib_name, glm::mat4 ptr) {
+}
+
+void aspect::GLProgram::set_uniform(std::string attrib_name, glm::mat4 ptr) {
+  glUniformMatrix4fv(get_uniform(attrib_name), 1, GL_FALSE, glm::value_ptr(ptr));
+}
+
 GLuint aspect::GLProgram::make_shader(std::string path, GLenum stype) {
   int length;
   const char *c_str;

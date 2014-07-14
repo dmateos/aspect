@@ -12,12 +12,11 @@
 namespace aspect {
   class Mesh {
     public:
-      Mesh(std::string file_name);
-      Mesh();
-
       std::vector<float> verticies, normals, textures;
-      int verticies_count;
 
+      Mesh();
+      Mesh(std::string file_name);
+      int verticies_count;
       void add_vertex(float x, float y, float z);
   };
 }
