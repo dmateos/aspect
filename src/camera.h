@@ -9,18 +9,14 @@ namespace aspect {
       Camera();
 
       glm::mat4 matrix();
-      glm::mat4 perspective();
-      glm::mat4 view();
-
-      void pitch(float n);
-      void yaw(float n);
-      void position_x(float n);
-      void position_y(float n);
+      void translate(const glm::vec3 &vec);
+      void rotate(const glm::vec3 &vec);
 
     private:
-      glm::vec3 position;
-      glm::vec3 target;
-      glm::vec3 up;
+      glm::vec3 m_position;
+      glm::mat4 m_view;
+      glm::mat4 m_orientation;
+      glm::mat4 m_perspective;
   };
 }
 

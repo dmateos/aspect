@@ -1,6 +1,6 @@
 #include "mesh.h"
 
-aspect::Mesh::Mesh(std::string file_name) {
+aspect::Mesh::Mesh(const std::string &file_name) {
   const aiScene *scene = aiImportFile(file_name.c_str(), aiProcess_Triangulate | aiProcess_MakeLeftHanded);
   //const aiScene *scene = aiImportFile(file_name.c_str(), aiProcess_Triangulate);
   unsigned int g_point_count = 0;
@@ -26,39 +26,32 @@ aspect::Mesh::Mesh(std::string file_name) {
       if(mesh->HasPositions()) {
           const aiVector3D *vp = &(mesh->mVertices[vi]);
           //printf ("vp %i (%f,%f,%f)\n", vi, vp->x, vp->y, vp->z);
-          this->verticies.push_back(vp->x);
-          this->verticies.push_back(vp->y);
-          this->verticies.push_back(vp->z);
+          verticies.push_back(vp->x);
+          verticies.push_back(vp->y);
+          verticies.push_back(vp->z);
         }
         if(mesh->HasNormals()) {
           const aiVector3D *vn = &(mesh->mNormals[vi]);
           //printf("vn %i (%f,%f,%f)\n", vi, vn->x, vn->y, vn->z);
-          this->normals.push_back(vn->x);
-          this->normals.push_back(vn->y);
-          this->normals.push_back(vn->z);
+          normals.push_back(vn->x);
+          normals.push_back(vn->y);
+          normals.push_back(vn->z);
         }
         if(mesh->HasTextureCoords(0)) {
           const aiVector3D* vt = &(mesh->mTextureCoords[0][vi]);
           //printf("vt %i (%f, %f)\n", vi, vt->x, vt->y);
-          this->textures.push_back(vt->x);
-          this->textures.push_back(vt->y);
+          textures.push_back(vt->x);
+          textures.push_back(vt->y);
         }
         if(mesh->HasTangentsAndBitangents()) {
 
         }
       }
     }
-    this->verticies_count = g_point_count;
+    verticies_count = g_point_count;
     aiReleaseImport(scene);
 }
 
 aspect::Mesh::Mesh() {
 
-}
-
-void aspect::Mesh::add_vertex(float x, float y, float z) {
-  this->verticies.push_back(x); 
-  this->verticies.push_back(y); 
-  this->verticies.push_back(z); 
-  this->verticies_count += 3;
 }

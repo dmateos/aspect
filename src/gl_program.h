@@ -1,5 +1,5 @@
-#ifndef _GL_SHADER_H_
-#define _GL_SHADER_H_
+#ifndef _GL_PROGRAM_H_
+#define _GL_PROGRAM_H_
 
 #include <fstream>
 
@@ -7,22 +7,21 @@
 
 namespace aspect {
   class GLProgram {
-    private:
-      GLuint vshader, fshader;
-      GLint program;
-
-      GLuint make_shader(std::string path, GLenum stype);
-      GLint make_program(GLint vshader, GLint fshader);
-    public:
-      GLProgram(std::string vshader, std::string fshader);
+   public:
+      GLProgram(const std::string &vshader, const std::string &fshader);
       void use();
+      GLint get_attrib(const std::string &attrib_name);
+      GLint get_uniform(const std::string &attrib_name);
+      void set_attrib(const std::string &attrib_name, const glm::mat4 &ptr);
+      void set_uniform(const std::string &attrib_name, const glm::mat4 &ptr);
 
-      GLint get_attrib(std::string attrib_name);
-      GLint get_uniform(std::string attrib_name);
+    private:
+      GLuint m_vshader, m_fshader;
+      GLint m_program;
 
-      void set_attrib(std::string attrib_name, glm::mat4 ptr);
-      void set_uniform(std::string attrib_name, glm::mat4 ptr);
-  };
+      GLuint make_shader(const std::string &path, GLenum stype);
+      GLint make_program(GLint vshader, GLint fshader);
+    };
 };
 
 #endif

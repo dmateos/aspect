@@ -3,7 +3,6 @@
 aspect::ModelAsset::ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program)
   : program(program), mesh(mesh)
 {
-
   this->mesh = mesh;
 
   glGenBuffers(1, &vbo);
@@ -12,8 +11,8 @@ aspect::ModelAsset::ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program)
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
 
-  glBufferData(GL_ARRAY_BUFFER, mesh->verticies_count * 3 * sizeof(float),
-               &mesh->verticies[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, mesh->get_verticies_count() * 3 * sizeof(float),
+              &mesh->verticies[0], GL_STATIC_DRAW);
 
   glEnableVertexAttribArray(program->get_attrib("vp"));
   glVertexAttribPointer(program->get_attrib("vp"), 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -24,7 +23,7 @@ aspect::ModelAsset::ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program)
 }
 
 aspect::ModelInstance::ModelInstance(aspect::ModelAsset *asset)
-  : asset(asset), translation(glm::mat4(1.0f))
+  : asset(asset), transform(glm::mat4(1.0f))
 {
 
 }

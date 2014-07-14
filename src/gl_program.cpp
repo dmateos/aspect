@@ -1,42 +1,42 @@
 #include "gl_program.h"
 
-aspect::GLProgram::GLProgram(std::string vshader, std::string fshader) {
-  if((this->vshader = make_shader(vshader, GL_VERTEX_SHADER)) == -1) {
+aspect::GLProgram::GLProgram(const std::string &vshader, const std::string &fshader) {
+  if((m_vshader = make_shader(vshader, GL_VERTEX_SHADER)) == -1) {
     std::cout << "could not load vshader " << vshader << std::endl;
   }
 
-  if((this->fshader = make_shader(fshader, GL_FRAGMENT_SHADER)) == -1) {
+  if((m_fshader = make_shader(fshader, GL_FRAGMENT_SHADER)) == -1) {
     std::cout << "could not load fshader " << fshader << std::endl;
   }
   //todo EXCEPTIONS
 
-  if((this->program = make_program(this->fshader, this->vshader)) == -1) {
+  if((m_program = make_program(m_vshader, m_fshader)) == -1) {
     std::cout << "could not make program" << std::endl;
   }
 }
 
 void aspect::GLProgram::use() {
-  glUseProgram(this->program);
+  glUseProgram(m_program);
 }
 
-GLint aspect::GLProgram::get_attrib(std::string attrib_name) {
-  GLint attrib = glGetAttribLocation(this->program, attrib_name.c_str());
+GLint aspect::GLProgram::get_attrib(const std::string &attrib_name) {
+  GLint attrib = glGetAttribLocation(m_program, attrib_name.c_str());
   return attrib;
 }
 
-GLint aspect::GLProgram::get_uniform(std::string attrib_name) {
-  GLint attrib = glGetUniformLocation(this->program, attrib_name.c_str());
+GLint aspect::GLProgram::get_uniform(const std::string &attrib_name) {
+  GLint attrib = glGetUniformLocation(m_program, attrib_name.c_str());
   return attrib;
 }
 
-void aspect::GLProgram::set_attrib(std::string attrib_name, glm::mat4 ptr) {
+void aspect::GLProgram::set_attrib(const std::string &attrib_name, const glm::mat4 &ptr) {
 }
 
-void aspect::GLProgram::set_uniform(std::string attrib_name, glm::mat4 ptr) {
+void aspect::GLProgram::set_uniform(const std::string &attrib_name, const glm::mat4 &ptr) {
   glUniformMatrix4fv(get_uniform(attrib_name), 1, GL_FALSE, glm::value_ptr(ptr));
 }
 
-GLuint aspect::GLProgram::make_shader(std::string path, GLenum stype) {
+GLuint aspect::GLProgram::make_shader(const std::string &path, GLenum stype) {
   int length;
   const char *c_str;
   GLint shader_ok;

@@ -12,6 +12,42 @@ void print_gl_stats() {
   std::cout << version << std::endl;
 }
 
+aspect::Camera camera;
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  float yrotd, xrotd;
+  switch(key) {
+    case GLFW_KEY_W:
+      camera.translate(glm::vec3(0.0f, 0.0f, 0.1f));
+      break;
+    case GLFW_KEY_A:
+      yrotd = (yrotd/180*3.14159);
+      camera.translate(glm::vec3(cos(yrotd) * 0.2f, 0.0f, sin(yrotd) * 0.2f));
+      break;
+    case GLFW_KEY_S:
+      camera.translate(glm::vec3(0.0f, 0.0f, -0.1f));
+      break;
+    case GLFW_KEY_D:
+      yrotd = (yrotd/180*3.14159);
+      camera.translate(glm::vec3(-cos(yrotd) * 0.2f, 0.0f, -sin(yrotd) * 0.2f));
+      break;
+  }
+}
+
+
+static void handle_mouse(GLFWwindow *window) {
+  static double oldx, oldy;
+  double diffx, diffy, x,y;
+
+  if(diffx != oldx || diffy != oldy) {
+    glfwGetCursorPos(window, &x, &y);
+    diffx = x - oldx;
+    diffy = y - oldy;
+
+    camera.rotate(glm::vec3(diffx * 0.1, diffy * 0.1, 0.0f)); 
+  }
+}
+
 int main(int argc, char **argv) {
   GLFWwindow *window;
 
@@ -32,6 +68,8 @@ int main(int argc, char **argv) {
   }
 
   glfwMakeContextCurrent(window);
+  glfwSetKeyCallback(window, key_callback);
+  glfwSetCursorPos(window, 0, 0);
   glewExperimental = GL_TRUE;
   glewInit();
 
@@ -42,33 +80,22 @@ int main(int argc, char **argv) {
 
   /* Load our objects. */
   aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
-  aspect::Camera camera;
 
   aspect::Mesh monkey_mesh("models/monkey.dae");
-  aspect::Mesh floor_mesh;
-
-  floor_mesh.add_vertex(-10.0f,-5.0f,-10.0f);
-  floor_mesh.add_vertex( 10.0f,-5.0f,-10.0f);
-  floor_mesh.add_vertex(-10.0f,-5.0f, 10.0f);
-  floor_mesh.add_vertex(10.0f,-5.0f,-10.0f);
-  floor_mesh.add_vertex(10.0f,-5.0f, 10.0f);
-  floor_mesh.add_vertex(-10.0f,-5.0f, 10.0f);
 
   aspect::ModelAsset monkey_asset(&monkey_mesh, &program);
-  aspect::ModelAsset floor_asset(&floor_mesh, &program);
+
+  aspect::ModelInstance monkey_instance(&monkey_asset);
+  monkey_instance.transform = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f));
+  aspect::ModelInstance monkey_instance2(&monkey_asset);
+  monkey_instance2.transform = glm::translate(glm::mat4(1.0f), glm::vec3(+2.0f, 0.0f, 0.0f));
 
   std::vector<aspect::ModelInstance*> instances;
-  aspect::ModelInstance monkey_instance(&monkey_asset);
-  aspect::ModelInstance floor_instance(&floor_asset);
-
   instances.push_back(&monkey_instance);
-  //instances.push_back(&floor_instance);
+  instances.push_back(&monkey_instance2);
 
-  program.use();
+  camera.translate(glm::vec3(0.0f, 0.0f, -5.0f));
 
-//  camera.position_x(3.0f);
-//  camera.position_y(3.0f);
-//  camera.pitch(2.0f);
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -77,20 +104,20 @@ int main(int argc, char **argv) {
         it != instances.end(); it++) {
         aspect::ModelInstance *model = *it;
 
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
 
-        model->transform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
         model->asset->program->use();
         model->asset->program->set_uniform("transform", model->transform);
         model->asset->program->set_uniform("camera", camera.matrix());
 
         glBindVertexArray(model->asset->vao);
-        glDrawArrays(GL_TRIANGLES, 0, model->asset->mesh->verticies_count);
+        glDrawArrays(GL_TRIANGLES, 0, model->asset->mesh->get_verticies_count());
 
         glBindVertexArray(0);
     }
 
 
+    handle_mouse(window);
     glfwSwapBuffers(window);
     glfwPollEvents();
   }

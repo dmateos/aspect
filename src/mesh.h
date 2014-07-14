@@ -15,9 +15,14 @@ namespace aspect {
       std::vector<float> verticies, normals, textures;
 
       Mesh();
-      Mesh(std::string file_name);
+      Mesh(const std::string &file_name);
+      int get_verticies_count() { return verticies_count; }
+      std::vector<float> *get_verticies() { return &verticies; }
+      std::vector<float> *get_normals() { return &normals; }
+      std::vector<float> *get_textures() { return &textures; } 
+
+    private:
       int verticies_count;
-      void add_vertex(float x, float y, float z);
   };
 }
 

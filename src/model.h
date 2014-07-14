@@ -13,7 +13,6 @@ namespace aspect {
       GLuint vbo, vao;
 
       ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program);
-
     private:
   };
 
@@ -23,7 +22,6 @@ namespace aspect {
       glm::mat4 transform;
 
       ModelInstance(aspect::ModelAsset *asset);
-
     private:
   };
 }
