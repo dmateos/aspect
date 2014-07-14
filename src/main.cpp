@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
     }
 
 
-    handle_mouse(window);
+  //  handle_mouse(window);
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
