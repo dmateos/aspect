@@ -10,18 +10,18 @@ namespace aspect {
     public:
       aspect::GLProgram *program;
       aspect::Mesh *mesh;
-      GLuint vbo, vao;
+      GLuint vbo[2], vao;
 
-      ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program);
+      ModelAsset(Mesh *mesh, GLProgram *program);
     private:
   };
 
   class ModelInstance {
     public:
-      aspect::ModelAsset *asset;
+      ModelAsset *asset;
       glm::mat4 transform;
 
-      ModelInstance(aspect::ModelAsset *asset);
+      ModelInstance(ModelAsset *asset);
     private:
   };
 }

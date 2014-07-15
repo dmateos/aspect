@@ -19,12 +19,12 @@ void aspect::GLProgram::use() {
   glUseProgram(m_program);
 }
 
-GLint aspect::GLProgram::get_attrib(const std::string &attrib_name) {
+GLint aspect::GLProgram::get_attrib(const std::string &attrib_name) const {
   GLint attrib = glGetAttribLocation(m_program, attrib_name.c_str());
   return attrib;
 }
 
-GLint aspect::GLProgram::get_uniform(const std::string &attrib_name) {
+GLint aspect::GLProgram::get_uniform(const std::string &attrib_name) const {
   GLint attrib = glGetUniformLocation(m_program, attrib_name.c_str());
   return attrib;
 }
@@ -36,7 +36,7 @@ void aspect::GLProgram::set_uniform(const std::string &attrib_name, const glm::m
   glUniformMatrix4fv(get_uniform(attrib_name), 1, GL_FALSE, glm::value_ptr(ptr));
 }
 
-GLuint aspect::GLProgram::make_shader(const std::string &path, GLenum stype) {
+GLuint aspect::GLProgram::make_shader(const std::string &path, GLenum stype) const {
   int length;
   const char *c_str;
   GLint shader_ok;
@@ -65,7 +65,7 @@ GLuint aspect::GLProgram::make_shader(const std::string &path, GLenum stype) {
   return shader;
 }
 
-GLint aspect::GLProgram::make_program(GLint vshader, GLint fshader) {
+GLint aspect::GLProgram::make_program(GLint vshader, GLint fshader) const {
   GLint program_ok;
   GLint shader_program = glCreateProgram();
 

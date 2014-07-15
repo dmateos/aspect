@@ -10,7 +10,7 @@ namespace aspect {
 
       glm::mat4 matrix();
       void translate(const glm::vec3 &vec);
-      void rotate(const glm::vec3 &vec);
+      void rotate(const glm::vec3 &vec, float step);
 
     private:
       glm::vec3 m_position;

@@ -12,10 +12,28 @@ void print_gl_stats() {
   std::cout << version << std::endl;
 }
 
+ void update_fps_counter(GLFWwindow* window) {
+  static double previous_seconds = glfwGetTime ();
+  static int frame_count;
+  double current_seconds = glfwGetTime ();
+  double elapsed_seconds = current_seconds - previous_seconds;
+
+  if (elapsed_seconds > 0.25) {
+    previous_seconds = current_seconds;
+    double fps = (double)frame_count / elapsed_seconds;
+    char tmp[128];
+    sprintf (tmp, "opengl @ fps: %.2lf", fps);
+    glfwSetWindowTitle (window, tmp);
+    frame_count = 0;
+  }
+  frame_count++;
+}
+
 aspect::Camera camera;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   float yrotd, xrotd;
+  yrotd = xrotd = 4.0;
   switch(key) {
     case GLFW_KEY_W:
       camera.translate(glm::vec3(0.0f, 0.0f, 0.1f));
@@ -39,13 +57,19 @@ static void handle_mouse(GLFWwindow *window) {
   static double oldx, oldy;
   double diffx, diffy, x,y;
 
-  if(diffx != oldx || diffy != oldy) {
-    glfwGetCursorPos(window, &x, &y);
+  glfwGetCursorPos(window, &x, &y);
+  if(x != oldx) {
     diffx = x - oldx;
-    diffy = y - oldy;
-
-    camera.rotate(glm::vec3(diffx * 0.1, diffy * 0.1, 0.0f)); 
+    oldx = x;
+    camera.rotate(glm::vec3(0.0f, diffx, 0.0f), 2.0f); 
   }
+
+  /*
+  if(y != oldy) {
+    diffy = y - oldy;
+    oldy = y;
+    camera.rotate(glm::vec3(diffy, 0.0f, 0.0f)); 
+  } */
 }
 
 int main(int argc, char **argv) {
@@ -69,7 +93,8 @@ int main(int argc, char **argv) {
 
   glfwMakeContextCurrent(window);
   glfwSetKeyCallback(window, key_callback);
-  glfwSetCursorPos(window, 0, 0);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetCursorPos(window, 1024/2, 768/2);
   glewExperimental = GL_TRUE;
   glewInit();
 
@@ -80,19 +105,26 @@ int main(int argc, char **argv) {
 
   /* Load our objects. */
   aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
-
-  aspect::Mesh monkey_mesh("models/monkey.dae");
-
-  aspect::ModelAsset monkey_asset(&monkey_mesh, &program);
-
-  aspect::ModelInstance monkey_instance(&monkey_asset);
-  monkey_instance.transform = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f));
-  aspect::ModelInstance monkey_instance2(&monkey_asset);
-  monkey_instance2.transform = glm::translate(glm::mat4(1.0f), glm::vec3(+2.0f, 0.0f, 0.0f));
+  aspect::Mesh object_mesh("models/torus.dae");
+  aspect::ModelAsset object_asset(&object_mesh, &program);
 
   std::vector<aspect::ModelInstance*> instances;
-  instances.push_back(&monkey_instance);
-  instances.push_back(&monkey_instance2);
+
+  aspect::ModelInstance object_instance(&object_asset);
+  object_instance.transform = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f));
+  instances.push_back(&object_instance);
+
+  aspect::ModelInstance object_instance2(&object_asset);
+  object_instance2.transform = glm::translate(glm::mat4(1.0f), glm::vec3(+2.0f, 0.0f, 0.0f));
+  instances.push_back(&object_instance2);
+
+  aspect::ModelInstance object_instance3(&object_asset);
+  object_instance3.transform = glm::translate(glm::mat4(1.0f), glm::vec3(+2.0f, 0.0f, -4.0f));
+  instances.push_back(&object_instance3);
+
+  aspect::ModelInstance object_instance4(&object_asset);
+  object_instance4.transform = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, -4.0f));
+  instances.push_back(&object_instance4);
 
   camera.translate(glm::vec3(0.0f, 0.0f, -5.0f));
 
@@ -104,7 +136,7 @@ int main(int argc, char **argv) {
         it != instances.end(); it++) {
         aspect::ModelInstance *model = *it;
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
 
         model->asset->program->use();
         model->asset->program->set_uniform("transform", model->transform);
@@ -117,7 +149,8 @@ int main(int argc, char **argv) {
     }
 
 
-  //  handle_mouse(window);
+    handle_mouse(window);
+    update_fps_counter(window);
     glfwSwapBuffers(window);
     glfwPollEvents();
   }

@@ -10,8 +10,8 @@ namespace aspect {
    public:
       GLProgram(const std::string &vshader, const std::string &fshader);
       void use();
-      GLint get_attrib(const std::string &attrib_name);
-      GLint get_uniform(const std::string &attrib_name);
+      GLint get_attrib(const std::string &attrib_name) const;
+      GLint get_uniform(const std::string &attrib_name) const;
       void set_attrib(const std::string &attrib_name, const glm::mat4 &ptr);
       void set_uniform(const std::string &attrib_name, const glm::mat4 &ptr);
 
@@ -19,8 +19,8 @@ namespace aspect {
       GLuint m_vshader, m_fshader;
       GLint m_program;
 
-      GLuint make_shader(const std::string &path, GLenum stype);
-      GLint make_program(GLint vshader, GLint fshader);
+      GLuint make_shader(const std::string &path, GLenum stype) const;
+      GLint make_program(GLint vshader, GLint fshader) const;
     };
 };
 
