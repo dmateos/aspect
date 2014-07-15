@@ -1,6 +1,8 @@
 #include "model.h"
 
-aspect::ModelAsset::ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program)
+using namespace aspect;
+
+ModelAsset::ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program)
   : program(program), mesh(mesh)
 {
   this->mesh = mesh;
@@ -29,10 +31,16 @@ aspect::ModelAsset::ModelAsset(aspect::Mesh *mesh, aspect::GLProgram *program)
   //Cleanup
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
+
+  std::cout << "loaded new model asset" << std::endl;
 }
 
-aspect::ModelInstance::ModelInstance(aspect::ModelAsset *asset)
+ModelInstance::ModelInstance(aspect::ModelAsset *asset)
   : asset(asset), transform(glm::mat4(1.0f))
 {
+  std::cout << "loaded new model instance" << std::endl;
+}
 
+glm::mat4 ModelInstance::matrix() {
+  return transform;
 }

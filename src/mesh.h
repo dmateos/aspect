@@ -21,6 +21,8 @@ namespace aspect {
       std::vector<float> *get_normals() { return &normals; }
       std::vector<float> *get_textures() { return &textures; } 
 
+      void add_vert(float x, float y, float z); 
+
     private:
       int verticies_count;
   };

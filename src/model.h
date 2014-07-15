@@ -20,6 +20,7 @@ namespace aspect {
     public:
       ModelAsset *asset;
       glm::mat4 transform;
+      glm::mat4 matrix();
 
       ModelInstance(ModelAsset *asset);
     private:

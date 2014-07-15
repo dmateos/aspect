@@ -50,8 +50,22 @@ aspect::Mesh::Mesh(const std::string &file_name) {
     }
     verticies_count = g_point_count;
     aiReleaseImport(scene);
+
+    std::cout << "loaded mesh " << file_name << std::endl;
 }
 
-aspect::Mesh::Mesh() {
+aspect::Mesh::Mesh() : verticies_count(0) {
+  std::cout << "loaded empty mesh" << std::endl;
+}
+
+void aspect::Mesh::add_vert(float x, float y, float z) {
+  verticies.push_back(x);
+  verticies.push_back(y);
+  verticies.push_back(z);
+  verticies_count += 1;
+
+  normals.push_back(1.0);
+  normals.push_back(0.0);
+  normals.push_back(0.0);
 
 }

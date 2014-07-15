@@ -6,6 +6,8 @@ Camera::Camera() {
   m_view = glm::mat4(1.0f);
   m_orientation = glm::mat4(1.0f);
   m_perspective = glm::perspective(45.0f, 4.0f/3.0f, 0.1f, 1000.0f);
+
+  std::cout << "initiated new camera" << std::endl;
 }
 
 glm::mat4 Camera::matrix() {

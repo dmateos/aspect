@@ -32,18 +32,20 @@ void print_gl_stats() {
 aspect::Camera camera;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  const float step = 1.0;
   float yrotd, xrotd;
-  yrotd = xrotd = 4.0;
+  yrotd = xrotd = 0;
+
   switch(key) {
     case GLFW_KEY_W:
-      camera.translate(glm::vec3(0.0f, 0.0f, 0.1f));
+      camera.translate(glm::vec3(0.0f, 0.0f, step));
       break;
     case GLFW_KEY_A:
       yrotd = (yrotd/180*3.14159);
       camera.translate(glm::vec3(cos(yrotd) * 0.2f, 0.0f, sin(yrotd) * 0.2f));
       break;
     case GLFW_KEY_S:
-      camera.translate(glm::vec3(0.0f, 0.0f, -0.1f));
+      camera.translate(glm::vec3(0.0f, 0.0f, -step));
       break;
     case GLFW_KEY_D:
       yrotd = (yrotd/180*3.14159);
@@ -105,7 +107,7 @@ int main(int argc, char **argv) {
 
   /* Load our objects. */
   aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
-  aspect::Mesh object_mesh("models/torus.dae");
+  aspect::Mesh object_mesh("models/monkey.dae");
   aspect::ModelAsset object_asset(&object_mesh, &program);
 
   std::vector<aspect::ModelInstance*> instances;
@@ -126,7 +128,18 @@ int main(int argc, char **argv) {
   object_instance4.transform = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, -4.0f));
   instances.push_back(&object_instance4);
 
-  camera.translate(glm::vec3(0.0f, 0.0f, -5.0f));
+  aspect::Mesh floor_mesh;
+  floor_mesh.add_vert(-10.0f,-5.0f,-10.0f);
+  floor_mesh.add_vert( 10.0f,-5.0f,-10.0f);
+  floor_mesh.add_vert(-10.0f,-5.0f, 10.0f);
+  floor_mesh.add_vert(10.0f,-5.0f,-10.0f);
+  floor_mesh.add_vert(10.0f,-5.0f, 10.0f);
+  floor_mesh.add_vert(-10.0f,-5.0f, 10.0f);
+  aspect::ModelAsset floor_asset(&floor_mesh, &program);
+  aspect::ModelInstance floor_instance(&floor_asset);
+  instances.push_back(&floor_instance);
+
+  camera.translate(glm::vec3(0.0f, 0.0f, -50.0f));
 
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -139,7 +152,7 @@ int main(int argc, char **argv) {
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
 
         model->asset->program->use();
-        model->asset->program->set_uniform("transform", model->transform);
+        model->asset->program->set_uniform("transform", model->matrix());
         model->asset->program->set_uniform("camera", camera.matrix());
 
         glBindVertexArray(model->asset->vao);
