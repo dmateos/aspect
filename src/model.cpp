@@ -44,3 +44,11 @@ ModelInstance::ModelInstance(aspect::ModelAsset *asset)
 glm::mat4 ModelInstance::matrix() {
   return transform;
 }
+
+void ModelInstance::translate(const glm::vec3 &vec) {
+
+}
+
+void ModelInstance::rotate(const glm::vec3 &vec) {
+
+}

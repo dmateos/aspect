@@ -5,6 +5,7 @@ client_objects = \
 	build/mesh.o \
 	build/model.o \
 	build/entity.o \
+	build/util.o \
 
 client_flags = -lglfw3 -lglew -lassimp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 
@@ -31,6 +32,9 @@ build/model.o: src/model.cpp
 
 build/entity.o: src/entity.cpp
 	$(CXX) -c -o $@ src/entity.cpp
+
+build/util.o: src/util.cpp
+	$(CXX) -c -o $@ src/util.cpp
 
 clean:
 	rm -rf build/*.o aspect

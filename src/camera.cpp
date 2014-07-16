@@ -5,7 +5,7 @@ using namespace aspect;
 Camera::Camera() {
   m_view = glm::mat4(1.0f);
   m_orientation = glm::mat4(1.0f);
-  m_perspective = glm::perspective(45.0f, 4.0f/3.0f, 0.1f, 1000.0f);
+  m_perspective = glm::perspective(45.0f, (float)1024/(float)768, 1.0f, 1000.0f);
 
   std::cout << "initiated new camera" << std::endl;
 }

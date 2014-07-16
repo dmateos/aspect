@@ -3,57 +3,42 @@
 #include "camera.h"
 #include "mesh.h"
 #include "model.h"
+#include "util.h"
 
-void print_gl_stats() {
-  const GLubyte *renderer = glGetString(GL_RENDERER);
-  const GLubyte *version = glGetString(GL_VERSION);
-
-  std::cout << renderer << std::endl;
-  std::cout << version << std::endl;
-}
-
- void update_fps_counter(GLFWwindow* window) {
-  static double previous_seconds = glfwGetTime ();
-  static int frame_count;
-  double current_seconds = glfwGetTime ();
-  double elapsed_seconds = current_seconds - previous_seconds;
-
-  if (elapsed_seconds > 0.25) {
-    previous_seconds = current_seconds;
-    double fps = (double)frame_count / elapsed_seconds;
-    char tmp[128];
-    sprintf (tmp, "opengl @ fps: %.2lf", fps);
-    glfwSetWindowTitle (window, tmp);
-    frame_count = 0;
-  }
-  frame_count++;
-}
-
-aspect::Camera camera;
+struct game_state {
+  aspect::Camera camera;
+  float yrot, xrot;
+} gs;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   const float step = 1.0;
   float yrotd, xrotd;
-  yrotd = xrotd = 0;
 
   switch(key) {
     case GLFW_KEY_W:
-      camera.translate(glm::vec3(0.0f, 0.0f, step));
+      gs.camera.translate(glm::vec3(0.0f, 0.0f, step));
       break;
     case GLFW_KEY_A:
-      yrotd = (yrotd/180*3.14159);
-      camera.translate(glm::vec3(cos(yrotd) * 0.2f, 0.0f, sin(yrotd) * 0.2f));
+      //yrotd = (yrot/180*3.14159);
+      //camera.translate(glm::vec3(cos(yrotd) * 0.2f, 0.0f, sin(yrotd) * 0.2f));
+      gs.camera.translate(glm::vec3(1.0f, 0.0f, 0.0f));
       break;
     case GLFW_KEY_S:
-      camera.translate(glm::vec3(0.0f, 0.0f, -step));
+      gs.camera.translate(glm::vec3(0.0f, 0.0f, -step));
       break;
     case GLFW_KEY_D:
-      yrotd = (yrotd/180*3.14159);
-      camera.translate(glm::vec3(-cos(yrotd) * 0.2f, 0.0f, -sin(yrotd) * 0.2f));
+      //yrotd = (yrot/180*3.14159);
+      //camera.translate(glm::vec3(-cos(yrotd) * 0.2f, 0.0f, -sin(yrotd) * 0.2f));
+      gs.camera.translate(glm::vec3(-1.0f, 0.0f, 0.0f));
+      break;
+    case GLFW_KEY_P:
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
+      break;
+    case GLFW_KEY_O:
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL );
       break;
   }
 }
-
 
 static void handle_mouse(GLFWwindow *window) {
   static double oldx, oldy;
@@ -63,10 +48,13 @@ static void handle_mouse(GLFWwindow *window) {
   if(x != oldx) {
     diffx = x - oldx;
     oldx = x;
-    camera.rotate(glm::vec3(0.0f, diffx, 0.0f), 2.0f); 
+    gs.camera.rotate(glm::vec3(0.0f, diffx, 0.0f), 2.0f); 
+    gs.yrot += diffx;
   }
 
   /*
+  aspect::Mesh object_mesh("models/monkey.dae");
+  aspect::ModelAsset object_asset(&object_mesh, &program);
   if(y != oldy) {
     diffy = y - oldy;
     oldy = y;
@@ -107,39 +95,38 @@ int main(int argc, char **argv) {
 
   /* Load our objects. */
   aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
-  aspect::Mesh object_mesh("models/monkey.dae");
+  aspect::Mesh object_mesh("models/cube.dae");
   aspect::ModelAsset object_asset(&object_mesh, &program);
 
   std::vector<aspect::ModelInstance*> instances;
 
   aspect::ModelInstance object_instance(&object_asset);
-  object_instance.transform = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f));
+  object_instance.transform = glm::translate(glm::mat4(1.0f), glm::vec3(50.0f, 0.0f, 50.0f));
   instances.push_back(&object_instance);
 
   aspect::ModelInstance object_instance2(&object_asset);
-  object_instance2.transform = glm::translate(glm::mat4(1.0f), glm::vec3(+2.0f, 0.0f, 0.0f));
+  object_instance2.transform = glm::translate(glm::mat4(1.0f), glm::vec3(54.0f, 0.0f, 50.0f));
   instances.push_back(&object_instance2);
 
   aspect::ModelInstance object_instance3(&object_asset);
-  object_instance3.transform = glm::translate(glm::mat4(1.0f), glm::vec3(+2.0f, 0.0f, -4.0f));
+  object_instance3.transform = glm::translate(glm::mat4(1.0f), glm::vec3(50.0f, 0.0f, 54.0f));
   instances.push_back(&object_instance3);
 
   aspect::ModelInstance object_instance4(&object_asset);
-  object_instance4.transform = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, -4.0f));
+  object_instance4.transform = glm::translate(glm::mat4(1.0f), glm::vec3(54.0f, 0.0f, 54.0f));
   instances.push_back(&object_instance4);
 
-  aspect::Mesh floor_mesh;
-  floor_mesh.add_vert(-10.0f,-5.0f,-10.0f);
-  floor_mesh.add_vert( 10.0f,-5.0f,-10.0f);
-  floor_mesh.add_vert(-10.0f,-5.0f, 10.0f);
-  floor_mesh.add_vert(10.0f,-5.0f,-10.0f);
-  floor_mesh.add_vert(10.0f,-5.0f, 10.0f);
-  floor_mesh.add_vert(-10.0f,-5.0f, 10.0f);
-  aspect::ModelAsset floor_asset(&floor_mesh, &program);
-  aspect::ModelInstance floor_instance(&floor_asset);
-  instances.push_back(&floor_instance);
+  aspect::Mesh cube_mesh("models/cube.dae");
+  aspect::ModelAsset cube_asset(&cube_mesh, &program);
+  for(float x = 0.0; x < 100.0; x+=4.0) {
+    for(float z = 0.0; z < 100.0; z+=4.0) {
+      aspect::ModelInstance *c = new aspect::ModelInstance(&cube_asset);
+      c->transform = glm::translate(glm::mat4(1.0f), glm::vec3(x, -2.0f, z));
+      instances.push_back(c);
+    }
+  }
 
-  camera.translate(glm::vec3(0.0f, 0.0f, -50.0f));
+  gs.camera.translate(glm::vec3(-50.0f, 0.0f, -60.0f));
 
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -149,18 +136,15 @@ int main(int argc, char **argv) {
         it != instances.end(); it++) {
         aspect::ModelInstance *model = *it;
 
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
-
         model->asset->program->use();
         model->asset->program->set_uniform("transform", model->matrix());
-        model->asset->program->set_uniform("camera", camera.matrix());
+        model->asset->program->set_uniform("camera", gs.camera.matrix());
 
         glBindVertexArray(model->asset->vao);
         glDrawArrays(GL_TRIANGLES, 0, model->asset->mesh->get_verticies_count());
 
         glBindVertexArray(0);
     }
-
 
     handle_mouse(window);
     update_fps_counter(window);

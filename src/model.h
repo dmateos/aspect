@@ -20,9 +20,11 @@ namespace aspect {
     public:
       ModelAsset *asset;
       glm::mat4 transform;
-      glm::mat4 matrix();
 
       ModelInstance(ModelAsset *asset);
+      glm::mat4 matrix();
+      void translate(const glm::vec3 &vec);
+      void rotate(const glm::vec3 &vec);
     private:
   };
 }
