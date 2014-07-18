@@ -7,7 +7,6 @@
 
 struct game_state {
   aspect::Camera camera;
-  float yrot, xrot;
 } gs;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -16,20 +15,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
   switch(key) {
     case GLFW_KEY_W:
-      gs.camera.translate(glm::vec3(0.0f, 0.0f, step));
+      gs.camera.offset_position(gs.camera.forward());
       break;
     case GLFW_KEY_A:
-      //yrotd = (yrot/180*3.14159);
-      //camera.translate(glm::vec3(cos(yrotd) * 0.2f, 0.0f, sin(yrotd) * 0.2f));
-      gs.camera.translate(glm::vec3(1.0f, 0.0f, 0.0f));
+      gs.camera.offset_position(-gs.camera.right());
       break;
     case GLFW_KEY_S:
-      gs.camera.translate(glm::vec3(0.0f, 0.0f, -step));
+      gs.camera.offset_position(-gs.camera.forward());
       break;
     case GLFW_KEY_D:
-      //yrotd = (yrot/180*3.14159);
-      //camera.translate(glm::vec3(-cos(yrotd) * 0.2f, 0.0f, -sin(yrotd) * 0.2f));
-      gs.camera.translate(glm::vec3(-1.0f, 0.0f, 0.0f));
+      gs.camera.offset_position(gs.camera.right());
       break;
     case GLFW_KEY_P:
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
@@ -41,25 +36,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 static void handle_mouse(GLFWwindow *window) {
-  static double oldx, oldy;
-  double diffx, diffy, x,y;
-
+  double x, y;
   glfwGetCursorPos(window, &x, &y);
-  if(x != oldx) {
-    diffx = x - oldx;
-    oldx = x;
-    gs.camera.rotate(glm::vec3(0.0f, diffx, 0.0f), 2.0f); 
-    gs.yrot += diffx;
-  }
-
-  /*
-  aspect::Mesh object_mesh("models/monkey.dae");
-  aspect::ModelAsset object_asset(&object_mesh, &program);
-  if(y != oldy) {
-    diffy = y - oldy;
-    oldy = y;
-    camera.rotate(glm::vec3(diffy, 0.0f, 0.0f)); 
-  } */
+  gs.camera.offset_orientation(y * 1.0, x * 1.0);
+  glfwSetCursorPos(window, 0.0f, 0.0f);
 }
 
 int main(int argc, char **argv) {
@@ -118,15 +98,15 @@ int main(int argc, char **argv) {
 
   aspect::Mesh cube_mesh("models/cube.dae");
   aspect::ModelAsset cube_asset(&cube_mesh, &program);
-  for(float x = 0.0; x < 100.0; x+=4.0) {
-    for(float z = 0.0; z < 100.0; z+=4.0) {
+  for(float x = 0.0; x < 200.0; x+=4.0) {
+    for(float z = 0.0; z < 200.0; z+=4.0) {
       aspect::ModelInstance *c = new aspect::ModelInstance(&cube_asset);
       c->transform = glm::translate(glm::mat4(1.0f), glm::vec3(x, -2.0f, z));
       instances.push_back(c);
     }
   }
 
-  gs.camera.translate(glm::vec3(-50.0f, 0.0f, -60.0f));
+  gs.camera.set_position(glm::vec3(50.0f, 0.0f, 60.0f));
 
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

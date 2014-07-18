@@ -7,16 +7,29 @@ namespace aspect {
   class Camera {
     public:
       Camera();
+      glm::vec3& position();
+      void set_position(const glm::vec3 &position);
+      void offset_position(const glm::vec3 &position);
+      glm::mat4 orientation() const;
+      void offset_orientation(float up, float right);
 
-      glm::mat4 matrix();
-      void translate(const glm::vec3 &vec);
-      void rotate(const glm::vec3 &vec, float step);
+      glm::vec3 forward() const;
+      glm::vec3 right() const;
+      glm::vec3 up() const;
+
+      glm::mat4 matrix() const;
+
+      void normalize();
 
     private:
       glm::vec3 m_position;
-      glm::mat4 m_view;
-      glm::mat4 m_orientation;
-      glm::mat4 m_perspective;
+      float m_horizontalangle;
+      float m_verticalangle;
+
+      float m_fov;
+      float m_nearplane;
+      float m_farplane;
+      float m_aspect;
   };
 }
 
