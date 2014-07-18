@@ -15,7 +15,7 @@ Camera::Camera() :
   m_fov(45.0f),
   m_nearplane(0.01f),
   m_farplane(1000.0f),
-  m_aspect(4.0f/3.0f)
+  m_aspect((float)XRES/(float)YRES)
 {
 
 }

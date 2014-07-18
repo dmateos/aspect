@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  if(!(window = glfwCreateWindow(1024, 768, "", NULL, NULL))) {
+  if(!(window = glfwCreateWindow(XRES, YRES, "", NULL, NULL))) {
     std::cout << "could not make glfw window" << std::endl;
     return 1;
   }
@@ -68,9 +68,10 @@ int main(int argc, char **argv) {
   glewExperimental = GL_TRUE;
   glewInit();
 
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_FRONT);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
-
   print_gl_stats();
 
   /* Load our objects. */
@@ -80,24 +81,9 @@ int main(int argc, char **argv) {
 
   std::vector<aspect::ModelInstance*> instances;
 
-  aspect::ModelInstance object_instance(&object_asset);
-  object_instance.transform = glm::translate(glm::mat4(1.0f), glm::vec3(50.0f, 0.0f, 50.0f));
-  instances.push_back(&object_instance);
-
-  aspect::ModelInstance object_instance2(&object_asset);
-  object_instance2.transform = glm::translate(glm::mat4(1.0f), glm::vec3(54.0f, 0.0f, 50.0f));
-  instances.push_back(&object_instance2);
-
-  aspect::ModelInstance object_instance3(&object_asset);
-  object_instance3.transform = glm::translate(glm::mat4(1.0f), glm::vec3(50.0f, 0.0f, 54.0f));
-  instances.push_back(&object_instance3);
-
-  aspect::ModelInstance object_instance4(&object_asset);
-  object_instance4.transform = glm::translate(glm::mat4(1.0f), glm::vec3(54.0f, 0.0f, 54.0f));
-  instances.push_back(&object_instance4);
-
   aspect::Mesh cube_mesh("models/cube.dae");
   aspect::ModelAsset cube_asset(&cube_mesh, &program);
+
   for(float x = 0.0; x < 200.0; x+=4.0) {
     for(float z = 0.0; z < 200.0; z+=4.0) {
       aspect::ModelInstance *c = new aspect::ModelInstance(&cube_asset);
