@@ -5,7 +5,9 @@
 #include "gl_program.h"
 #include <vector>
 
-#define CCOUNT 16
+#define CCOUNTX 300
+#define CCOUNTY 1
+#define CCOUNTZ 300
 #define CSIZE 2.0f
 
 namespace aspect {
@@ -16,7 +18,7 @@ namespace aspect {
       void update();
       void draw(glm::mat4 camera);
     private:
-      int m_cube[CCOUNT][CCOUNT][CCOUNT];
+      int m_cube[CCOUNTX][CCOUNTY][CCOUNTZ];
       std::vector<float> m_verticies;
       GLuint m_vbo, m_vao;
       GLProgram *program;

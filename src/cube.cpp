@@ -7,9 +7,9 @@
 using namespace aspect;
 
 CubeChunk::CubeChunk(GLProgram *program) : program(program){
-  for(int x = 0; x < CCOUNT; x++) {
-    for(int y = 0; y < CCOUNT; y++) {
-      for(int z = 0; z < CCOUNT; z++) {
+  for(int x = 0; x < CCOUNTX; x++) {
+    for(int y = 0; y < CCOUNTY; y++) {
+      for(int z = 0; z < CCOUNTZ; z++) {
         m_cube[x][y][z] = 1;
       }
     }
@@ -36,9 +36,9 @@ CubeChunk::~CubeChunk() {
 #define push_three(v, x,y,z)  v.push_back(x); v.push_back(y); v.push_back(z);
 
 void CubeChunk::update() {
-  for(int xp = 0, x = 0; xp < CCOUNT; xp += 1, x += CSIZE+1) {
-    for(int yp = 0, y = 0; yp < CCOUNT; yp += 1, y += CSIZE+1) {
-      for(int zp = 0, z = 0; zp < CCOUNT; zp +=1, z += CSIZE+1) {
+  for(int xp = 0, x = 0; xp < CCOUNTX; xp += 1, x += CSIZE+1) {
+    for(int yp = 0, y = 0; yp < CCOUNTY; yp += 1, y += CSIZE+1) {
+      for(int zp = 0, z = 0; zp < CCOUNTZ; zp +=1, z += CSIZE+1) {
         if(m_cube[xp][yp][zp] == 1) {
           push_three(m_verticies, x+0.0f, y+0.0f, z+0.0f);
           push_three(m_verticies, x+0.0f, y+0.0f, z+CSIZE);
