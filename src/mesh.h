@@ -12,19 +12,20 @@
 namespace aspect {
   class Mesh {
     public:
-      std::vector<float> verticies, normals, textures;
+      std::vector<float> m_verticies, m_normals, m_textures;
+      std::vector<unsigned int> m_indeces;
 
-      Mesh();
       Mesh(const std::string &file_name);
-      int get_verticies_count() { return verticies_count; }
-      std::vector<float> *get_verticies() { return &verticies; }
-      std::vector<float> *get_normals() { return &normals; }
-      std::vector<float> *get_textures() { return &textures; } 
-
-      void add_vert(float x, float y, float z); 
+      int get_verticies_count() const { return m_verticies_count; }
+      int get_indeces_count() const { return m_indeces_count; }
+      std::vector<float> *get_verticies() { return &m_verticies; }
+      std::vector<float> *get_normals() { return &m_normals; }
+      std::vector<float> *get_textures() { return &m_textures; } 
+      std::vector<unsigned int> *get_indeces() { return &m_indeces; }
 
     private:
-      int verticies_count;
+      unsigned int m_verticies_count;
+      unsigned int m_indeces_count;
   };
 }
 

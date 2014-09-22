@@ -33,9 +33,6 @@ GLint GLProgram::get_uniform(const std::string &attrib_name) const {
   return attrib;
 }
 
-void GLProgram::set_attrib(const std::string &attrib_name, const glm::mat4 &ptr) {
-}
-
 void GLProgram::set_uniform(const std::string &attrib_name, const glm::mat4 &ptr) {
   glUniformMatrix4fv(get_uniform(attrib_name), 1, GL_FALSE, glm::value_ptr(ptr));
 }
@@ -61,7 +58,7 @@ GLuint GLProgram::make_shader(const std::string &path, GLenum stype) const {
   /* Check for compile issues. */
   glGetShaderiv(shader, GL_COMPILE_STATUS, &shader_ok);
   if(!shader_ok) {
-    std::cout << path << "did not compile" << std::endl;
+    std::cout << path << " did not compile" << std::endl;
     glDeleteShader(shader);
     return -1;
   }

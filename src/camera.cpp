@@ -4,10 +4,6 @@ using namespace aspect;
 
 static const float maxvert = 85.0f; //gimbal lock :(
 
-static inline float radtodeg(float rad) {
-  return rad * 180.0f / 3.14159265359;
-}
-
 Camera::Camera() :
   m_position(0.0f, 0.0f, 1.0f),
   m_horizontalangle(0.0f),
@@ -32,6 +28,10 @@ void Camera::offset_position(const glm::vec3 &position) {
   m_position += position;
 }
 
+glm::vec3 Camera::get_position() const {
+  return m_position;
+}
+
 glm::mat4 Camera::orientation() const {
   glm::mat4 orientation;
   orientation = glm::rotate(orientation, m_verticalangle, glm::vec3(1,0,0));
@@ -45,18 +45,18 @@ void Camera::offset_orientation(float up, float right) {
   normalize();
 }
 
-glm::vec3 Camera::forward() const {
-  glm::vec4 forward = glm::inverse(orientation()) * glm::vec4(0,0,-1,1);
+glm::vec3 Camera::forward(float step) const {
+  glm::vec4 forward = glm::inverse(orientation()) * glm::vec4(0,0,-step,1);
   return glm::vec3(forward);
 }
 
-glm::vec3 Camera::right() const {
-  glm::vec4 right = glm::inverse(orientation()) * glm::vec4(1,0,0,1);
+glm::vec3 Camera::right(float step) const {
+  glm::vec4 right = glm::inverse(orientation()) * glm::vec4(step,0,0,1);
   return glm::vec3(right);
 }
 
-glm::vec3 Camera::up() const {
-  glm::vec4 up = glm::inverse(orientation()) * glm::vec4(0,1,0,1);
+glm::vec3 Camera::up(float step) const {
+  glm::vec4 up = glm::inverse(orientation()) * glm::vec4(0,step,0,1);
   return glm::vec3(up);
 }
 

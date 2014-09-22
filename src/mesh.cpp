@@ -1,6 +1,8 @@
 #include "mesh.h"
 
-aspect::Mesh::Mesh(const std::string &file_name) {
+using namespace aspect;
+
+Mesh::Mesh(const std::string &file_name) {
   const aiScene *scene = aiImportFile(file_name.c_str(), aiProcess_Triangulate | aiProcess_MakeLeftHanded);
   //const aiScene *scene = aiImportFile(file_name.c_str(), aiProcess_Triangulate);
   unsigned int g_point_count = 0;
@@ -8,15 +10,7 @@ aspect::Mesh::Mesh(const std::string &file_name) {
     fprintf(stderr, "error reading mesh %s\n", file_name.c_str());
   }
 
-  /*
-  15   printf("%i animations\n", scene->mNumAnimations);
-  16   printf("%i cameras\n", scene->mNumCameras);
-  17   printf("%i lights\n", scene->mNumLights);
-  18   printf("%i materials\n", scene->mNumMaterials);
-  19   printf("%i meshes\n", scene->mNumMeshes);
-  20   printf("%i textures\n", scene->mNumTextures);
-  21   */
-
+  m_indeces_count = 0;
   for(unsigned int mi = 0; mi < scene->mNumMeshes; mi++) {
     const aiMesh *mesh = scene->mMeshes[mi];
     //printf("%i verts in mesh\n", mesh->mNumVertices);
@@ -25,47 +19,43 @@ aspect::Mesh::Mesh(const std::string &file_name) {
     for(unsigned int vi = 0; vi < mesh->mNumVertices; vi++) {
       if(mesh->HasPositions()) {
           const aiVector3D *vp = &(mesh->mVertices[vi]);
-          //printf ("vp %i (%f,%f,%f)\n", vi, vp->x, vp->y, vp->z);
-          verticies.push_back(vp->x);
-          verticies.push_back(vp->y);
-          verticies.push_back(vp->z);
+          printf ("vp %i (%f,%f,%f)\n", vi, vp->x, vp->y, vp->z);
+          m_verticies.push_back(vp->x);
+          m_verticies.push_back(vp->y);
+          m_verticies.push_back(vp->z);
         }
         if(mesh->HasNormals()) {
           const aiVector3D *vn = &(mesh->mNormals[vi]);
           //printf("vn %i (%f,%f,%f)\n", vi, vn->x, vn->y, vn->z);
-          normals.push_back(vn->x);
-          normals.push_back(vn->y);
-          normals.push_back(vn->z);
+          m_normals.push_back(vn->x);
+          m_normals.push_back(vn->y);
+          m_normals.push_back(vn->z);
         }
         if(mesh->HasTextureCoords(0)) {
           const aiVector3D* vt = &(mesh->mTextureCoords[0][vi]);
           //printf("vt %i (%f, %f)\n", vi, vt->x, vt->y);
-          textures.push_back(vt->x);
-          textures.push_back(vt->y);
+          m_textures.push_back(vt->x);
+          m_textures.push_back(vt->y);
         }
         if(mesh->HasTangentsAndBitangents()) {
 
         }
       }
+
+      if(mesh->HasFaces()) {
+        for(unsigned int vi = 0; vi < mesh->mNumFaces; vi++) {
+          struct aiFace *vf = mesh->mFaces + vi; 
+          m_indeces.push_back(vf->mIndices[0]);
+          m_indeces.push_back(vf->mIndices[1]);
+          m_indeces.push_back(vf->mIndices[2]);
+          printf("vi %d %d %d\n", vf->mIndices[0], vf->mIndices[1], vf->mIndices[2]);
+          m_indeces_count += 3;
+        }
+      }
     }
-    verticies_count = g_point_count;
+
+    m_verticies_count = g_point_count;
     aiReleaseImport(scene);
 
     std::cout << "loaded mesh " << file_name << std::endl;
-}
-
-aspect::Mesh::Mesh() : verticies_count(0) {
-  std::cout << "loaded empty mesh" << std::endl;
-}
-
-void aspect::Mesh::add_vert(float x, float y, float z) {
-  verticies.push_back(x);
-  verticies.push_back(y);
-  verticies.push_back(z);
-  verticies_count += 1;
-
-  normals.push_back(1.0);
-  normals.push_back(0.0);
-  normals.push_back(0.0);
-
 }

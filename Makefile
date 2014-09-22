@@ -4,9 +4,9 @@ client_objects = \
 	build/camera.o \
 	build/mesh.o \
 	build/model.o \
-	build/entity.o \
 	build/util.o \
 	build/texture.o \
+	build/cube.o \
 
 client_flags = -lglfw3 -lglew -lassimp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 
@@ -31,14 +31,14 @@ build/mesh.o: src/mesh.cpp
 build/model.o: src/model.cpp
 	$(CXX) -c -o $@ src/model.cpp
 
-build/entity.o: src/entity.cpp
-	$(CXX) -c -o $@ src/entity.cpp
-
 build/util.o: src/util.cpp
 	$(CXX) -c -o $@ src/util.cpp
 
 build/texture.o: src/texture.cpp
 	$(CXX) -c -o $@ src/texture.cpp
+
+build/cube.o: src/cube.cpp
+	$(CXX) -c -o $@ src/cube.cpp
 
 clean:
 	rm -rf build/*.o aspect

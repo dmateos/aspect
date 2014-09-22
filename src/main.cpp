@@ -4,27 +4,31 @@
 #include "mesh.h"
 #include "model.h"
 #include "util.h"
+#include "cube.h"
 
 struct game_state {
   aspect::Camera camera;
+  std::vector<aspect::ModelInstance*> instances;
+  double delta_time;
 } gs;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   const float step = 1.0;
   float yrotd, xrotd;
+  bool colision = false;
 
   switch(key) {
     case GLFW_KEY_W:
-      gs.camera.offset_position(gs.camera.forward());
+      gs.camera.offset_position(gs.camera.forward(1.0f));
       break;
     case GLFW_KEY_A:
-      gs.camera.offset_position(-gs.camera.right());
+      gs.camera.offset_position(-gs.camera.right(1.0f));
       break;
     case GLFW_KEY_S:
-      gs.camera.offset_position(-gs.camera.forward());
+      gs.camera.offset_position(-gs.camera.forward(1.0f));
       break;
     case GLFW_KEY_D:
-      gs.camera.offset_position(gs.camera.right());
+      gs.camera.offset_position(gs.camera.right(1.0f));
       break;
     case GLFW_KEY_P:
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
@@ -74,48 +78,48 @@ int main(int argc, char **argv) {
   glDepthFunc(GL_LESS);
   print_gl_stats();
 
-  /* Load our objects. */
-  aspect::GLProgram program("shaders/vshader.test", "shaders/fshader.test");
-  aspect::Mesh object_mesh("models/cube.dae");
-  aspect::ModelAsset object_asset(&object_mesh, &program);
+  /* Draw our cubes */
+  aspect::GLProgram cube_program("shaders/vshader-nm.glsl", "shaders/fshader-nm.glsl");
 
-  std::vector<aspect::ModelInstance*> instances;
+  gs.camera.set_position(glm::vec3(+0.0f, +10.0f, +0.0f));
+  double currentframe = glfwGetTime();
+  double lastframe = currentframe;
 
   aspect::Mesh cube_mesh("models/cube.dae");
-  aspect::ModelAsset cube_asset(&cube_mesh, &program);
-
-  for(float x = 0.0; x < 200.0; x+=4.0) {
-    for(float z = 0.0; z < 200.0; z+=4.0) {
-      aspect::ModelInstance *c = new aspect::ModelInstance(&cube_asset);
-      c->transform = glm::translate(glm::mat4(1.0f), glm::vec3(x, -2.0f, z));
-      instances.push_back(c);
+  aspect::ModelAsset cube_asset(&cube_mesh, &cube_program);
+  for(float x = 0.0; x < 10.0; x += 1.0) {
+    for(float y = 0.0; y < 10.0; y += 1.0) {
+      for(float z = 0.0; z < 10.0; z += 1.0) {
+        aspect::ModelInstance *c = new aspect::ModelInstance(&cube_asset);
+        c->set_position(glm::vec3(x+30, y, z));
+        c->update();
+        gs.instances.push_back(c);
+      }
     }
   }
 
-  gs.camera.set_position(glm::vec3(50.0f, 0.0f, 60.0f));
+  aspect::GLProgram chunk_program("shaders/vshader.glsl", "shaders/fshader.glsl");
+  aspect::CubeChunk chunk(&chunk_program);
+  chunk.update();
 
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for(std::vector<aspect::ModelInstance*>::iterator it = instances.begin();
-        it != instances.end(); it++) {
-        aspect::ModelInstance *model = *it;
-
-        model->asset->program->use();
-        model->asset->program->set_uniform("transform", model->matrix());
-        model->asset->program->set_uniform("camera", gs.camera.matrix());
-
-        glBindVertexArray(model->asset->vao);
-        glDrawArrays(GL_TRIANGLES, 0, model->asset->mesh->get_verticies_count());
-
-        glBindVertexArray(0);
+    for(std::vector<aspect::ModelInstance*>::iterator it = gs.instances.begin();
+        it != gs.instances.end(); it++) {
+       (*it)->draw(gs.camera.matrix());
     }
 
+    chunk.draw(gs.camera.matrix());
     handle_mouse(window);
     update_fps_counter(window);
     glfwSwapBuffers(window);
     glfwPollEvents();
+
+    currentframe = glfwGetTime();
+    gs.delta_time = currentframe - lastframe;
+    lastframe = currentframe;
   }
 
   glfwTerminate();

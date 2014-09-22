@@ -10,12 +10,14 @@ namespace aspect {
       glm::vec3& position();
       void set_position(const glm::vec3 &position);
       void offset_position(const glm::vec3 &position);
+      glm::vec3 get_position() const;
+
       glm::mat4 orientation() const;
       void offset_orientation(float up, float right);
 
-      glm::vec3 forward() const;
-      glm::vec3 right() const;
-      glm::vec3 up() const;
+      glm::vec3 forward(float step) const;
+      glm::vec3 right(float step) const;
+      glm::vec3 up(float step) const;
 
       glm::mat4 matrix() const;
 
