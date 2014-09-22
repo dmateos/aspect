@@ -5,15 +5,18 @@
 #include "gl_program.h"
 #include <vector>
 
-#define CSIZE 10
+#define CCOUNT 16
+#define CSIZE 2.0f
+
 namespace aspect {
   class CubeChunk {
     public:
       CubeChunk(GLProgram *program);
+      ~CubeChunk();
       void update();
       void draw(glm::mat4 camera);
     private:
-      int m_cube[CSIZE][CSIZE][CSIZE];
+      int m_cube[CCOUNT][CCOUNT][CCOUNT];
       std::vector<float> m_verticies;
       GLuint m_vbo, m_vao;
       GLProgram *program;

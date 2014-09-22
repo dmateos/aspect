@@ -72,31 +72,24 @@ int main(int argc, char **argv) {
   glewExperimental = GL_TRUE;
   glewInit();
 
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_FRONT);
+  //glEnable(GL_CULL_FACE);
+  //glCullFace(GL_FRONT);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
   print_gl_stats();
 
-  /* Draw our cubes */
-  aspect::GLProgram cube_program("shaders/vshader-nm.glsl", "shaders/fshader-nm.glsl");
 
   gs.camera.set_position(glm::vec3(+0.0f, +10.0f, +0.0f));
   double currentframe = glfwGetTime();
   double lastframe = currentframe;
 
-  aspect::Mesh cube_mesh("models/cube.dae");
-  aspect::ModelAsset cube_asset(&cube_mesh, &cube_program);
-  for(float x = 0.0; x < 10.0; x += 1.0) {
-    for(float y = 0.0; y < 10.0; y += 1.0) {
-      for(float z = 0.0; z < 10.0; z += 1.0) {
-        aspect::ModelInstance *c = new aspect::ModelInstance(&cube_asset);
-        c->set_position(glm::vec3(x+30, y, z));
-        c->update();
-        gs.instances.push_back(c);
-      }
-    }
-  }
+  aspect::GLProgram monkey_program("shaders/vshader-nm.glsl", "shaders/fshader-nm.glsl");
+  aspect::Mesh monkey_mesh("models/monkey.dae");
+  aspect::ModelAsset monkey_asset(&monkey_mesh, &monkey_program);
+  aspect::ModelInstance monkey(&monkey_asset);
+  monkey.offset_position(glm::vec3(30, 0, 0));
+  monkey.update();
+  gs.instances.push_back(&monkey);
 
   aspect::GLProgram chunk_program("shaders/vshader.glsl", "shaders/fshader.glsl");
   aspect::CubeChunk chunk(&chunk_program);

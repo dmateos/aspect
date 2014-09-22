@@ -6,43 +6,11 @@
 
 using namespace aspect;
 
-/*
-Cube::Cube() {
-  float verts[] = {
-    0.3f,0.3f,-0.3f, // topFront Right
-    0.3f,-0.3f,-0.3f, //BottomFront Right
-    -0.3f,-0.3f,-0.3f, //BottomFront Left
-    -0.3f,0.3f,-0.3f,  //topFront Left
-    0.3f,0.3f,0.3f, // topBack Right
-    0.3f,-0.3f,0.3f, //BottomBack Right
-    -0.3f,-0.3f,0.3f, //BottomBack Left
-    -0.3f,0.3f,0.3f,  //topBack Left
-  };
-
-  float ind[] = {
-    3,4,0, 0,4,1, 3,0,1,
-    3,7,4, 7,6,4, 7,3,6,
-    3,1,2, 1,6,2, 6,3,2,
-    1,4,5, 5,6,1, 6,5,4    
-  
-
-  memcpy(verts, verticies, sizeof(verts));
-  memcpy(ind, indeces, sizeof(indeces));
-}
-*/
-
 CubeChunk::CubeChunk(GLProgram *program) : program(program){
-  bool flip = 1;
-  for(int x = 0; x < CSIZE; x++) {
-    for(int y = 0; y < CSIZE; y++) {
-      for(int z = 0; z < CSIZE; z++) {
-        if(flip == 1) {
-          m_cube[x][y][z] = 1;
-          flip = 0;
-        } else {
-          m_cube[x][y][z] = 1;
-          flip = 1;
-        }
+  for(int x = 0; x < CCOUNT; x++) {
+    for(int y = 0; y < CCOUNT; y++) {
+      for(int z = 0; z < CCOUNT; z++) {
+        m_cube[x][y][z] = 1;
       }
     }
   }
@@ -61,49 +29,53 @@ CubeChunk::CubeChunk(GLProgram *program) : program(program){
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+CubeChunk::~CubeChunk() {
+
+}
+
 #define push_three(v, x,y,z)  v.push_back(x); v.push_back(y); v.push_back(z);
 
 void CubeChunk::update() {
-  for(int x = 0; x < CSIZE; x += 1) {
-    for(int y = 0; y < CSIZE; y += 1) {
-      for(int z = 0; z < CSIZE; z += 1) {
-        if(m_cube[x][y][z] == 1) {
+  for(int xp = 0, x = 0; xp < CCOUNT; xp += 1, x += CSIZE+1) {
+    for(int yp = 0, y = 0; yp < CCOUNT; yp += 1, y += CSIZE+1) {
+      for(int zp = 0, z = 0; zp < CCOUNT; zp +=1, z += CSIZE+1) {
+        if(m_cube[xp][yp][zp] == 1) {
           push_three(m_verticies, x+0.0f, y+0.0f, z+0.0f);
-          push_three(m_verticies, x+0.0f, y+0.0f, z+1.0f);
-          push_three(m_verticies, x+0.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+1.0f, y+1.0f, z+0.0f);
+          push_three(m_verticies, x+0.0f, y+0.0f, z+CSIZE);
+          push_three(m_verticies, x+0.0f, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+CSIZE, y+CSIZE, z+0.0f);
           push_three(m_verticies, x+0.0f, y+0.0f, z+0.0f);
-          push_three(m_verticies, x+0.0f, y+1.0f, z+0.0f);
-          push_three(m_verticies, x+1.0f, y+0.0f, z+1.0f);
+          push_three(m_verticies, x+0.0f, y+CSIZE, z+0.0f);
+          push_three(m_verticies, x+CSIZE, y+0.0f, z+CSIZE);
           push_three(m_verticies, x+0.0f,y+0.0f,z+0.0f);
-          push_three(m_verticies, x+1.0f, y+0.0f,z+0.0f);
-          push_three(m_verticies, x+1.0f, y+1.0f, z+0.0f);
-          push_three(m_verticies, x+1.0f, y+0.0f, z+0.0f);
+          push_three(m_verticies, x+CSIZE, y+0.0f,z+0.0f);
+          push_three(m_verticies, x+CSIZE, y+CSIZE, z+0.0f);
+          push_three(m_verticies, x+CSIZE, y+0.0f, z+0.0f);
           push_three(m_verticies, x+0.0f,y+0.0f, z+0.0f);
           push_three(m_verticies, x+0.0f, y+0.0f, z+0.0f);
-          push_three(m_verticies, x+0.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+0.0f, y+1.0f, z+0.0f);
-          push_three(m_verticies, x+1.0f, y+0.0f, z+1.0f);
-          push_three(m_verticies, x+0.0f, y+0.0f, z+1.0f);
+          push_three(m_verticies, x+0.0f, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+0.0f, y+CSIZE, z+0.0f);
+          push_three(m_verticies, x+CSIZE, y+0.0f, z+CSIZE);
+          push_three(m_verticies, x+0.0f, y+0.0f, z+CSIZE);
           push_three(m_verticies, x+0.0f, y+0.0f, z+0.0f);
-          push_three(m_verticies, x+0.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+0.0f, y+0.0f, z+1.0f);
-          push_three(m_verticies, x+1.0f, y+0.0f, z+1.0f);
-          push_three(m_verticies, x+1.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+1.0f, y+0.0f, z+0.0f);
-          push_three(m_verticies, x+1.0f, y+1.0f, z+0.0f);
-          push_three(m_verticies, x+1.0f, y+0.0f, z+0.0f);
-          push_three(m_verticies, x+1.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+1.0f, y+0.0f, z+1.0f);
-          push_three(m_verticies, x+1.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+1.0f, y+1.0f, z+0.0f);
-          push_three(m_verticies, x+0.0f, y+1.0f,z+0.0f);
-          push_three(m_verticies, x+1.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+0.0f, y+1.0f, z+0.0f);
-          push_three(m_verticies, x+0.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+1.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+0.0f, y+1.0f, z+1.0f);
-          push_three(m_verticies, x+1.0f, y+0.0f, z+1.0f);
+          push_three(m_verticies, x+0.0f, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+0.0f, y+0.0f, z+CSIZE);
+          push_three(m_verticies, x+CSIZE, y+0.0f, z+CSIZE);
+          push_three(m_verticies, x+CSIZE, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+CSIZE, y+0.0f, z+0.0f);
+          push_three(m_verticies, x+CSIZE, y+CSIZE, z+0.0f);
+          push_three(m_verticies, x+CSIZE, y+0.0f, z+0.0f);
+          push_three(m_verticies, x+CSIZE, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+CSIZE, y+0.0f, z+CSIZE);
+          push_three(m_verticies, x+CSIZE, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+CSIZE, y+CSIZE, z+0.0f);
+          push_three(m_verticies, x+0.0f, y+CSIZE,z+0.0f);
+          push_three(m_verticies, x+CSIZE, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+0.0f, y+CSIZE, z+0.0f);
+          push_three(m_verticies, x+0.0f, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+CSIZE, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+0.0f, y+CSIZE, z+CSIZE);
+          push_three(m_verticies, x+CSIZE, y+0.0f, z+CSIZE);
         }
       }
     }
