@@ -5,10 +5,11 @@
 #include "gl_program.h"
 #include <vector>
 
-#define CCOUNTX 300
-#define CCOUNTY 1
-#define CCOUNTZ 300
-#define CSIZE 2.0f
+#define CCOUNTX 16   //cubes horizontally
+#define CCOUNTY 16     //vertically
+#define CCOUNTZ 16   //inward
+#define CSIZE 1.0f    //size of cubes
+#define CSEP 0.0f     //seperation between cubes
 
 namespace aspect {
   class CubeChunk {
@@ -16,7 +17,7 @@ namespace aspect {
       CubeChunk(GLProgram *program);
       ~CubeChunk();
       void update();
-      void draw(glm::mat4 camera);
+      void draw(glm::mat4 camera) const;
     private:
       int m_cube[CCOUNTX][CCOUNTY][CCOUNTZ];
       std::vector<float> m_verticies;

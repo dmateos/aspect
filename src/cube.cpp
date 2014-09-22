@@ -27,6 +27,8 @@ CubeChunk::CubeChunk(GLProgram *program) : program(program){
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  printf("loaded cube chunk %dx%dx%d with size %g and sep %g\n", CCOUNTX, CCOUNTY, CCOUNTX, CSIZE, CSEP); 
 }
 
 CubeChunk::~CubeChunk() {
@@ -36,9 +38,9 @@ CubeChunk::~CubeChunk() {
 #define push_three(v, x,y,z)  v.push_back(x); v.push_back(y); v.push_back(z);
 
 void CubeChunk::update() {
-  for(int xp = 0, x = 0; xp < CCOUNTX; xp += 1, x += CSIZE+1) {
-    for(int yp = 0, y = 0; yp < CCOUNTY; yp += 1, y += CSIZE+1) {
-      for(int zp = 0, z = 0; zp < CCOUNTZ; zp +=1, z += CSIZE+1) {
+  for(int xp = 0, x = 0; xp < CCOUNTX; xp += 1, x += CSIZE+CSEP) {
+    for(int yp = 0, y = 0; yp < CCOUNTY; yp += 1, y += CSIZE+CSEP) {
+      for(int zp = 0, z = 0; zp < CCOUNTZ; zp +=1, z += CSIZE+CSEP) {
         if(m_cube[xp][yp][zp] == 1) {
           push_three(m_verticies, x+0.0f, y+0.0f, z+0.0f);
           push_three(m_verticies, x+0.0f, y+0.0f, z+CSIZE);
@@ -85,9 +87,12 @@ void CubeChunk::update() {
   glBufferData(GL_ARRAY_BUFFER, m_verticies.size() * sizeof(float), &m_verticies[0], GL_STATIC_DRAW);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  printf("updated chunk with %d cubes with %zu verticies(%zu bytes)\n", CCOUNTX*CCOUNTY*CCOUNTZ, m_verticies.size(), 
+          m_verticies.size()*sizeof(float));
 }
 
-void CubeChunk::draw(glm::mat4 camera) {
+void CubeChunk::draw(glm::mat4 camera) const {
   program->use();
   program->set_uniform("camera", camera);
   glBindVertexArray(m_vao);

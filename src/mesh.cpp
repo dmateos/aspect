@@ -19,7 +19,7 @@ Mesh::Mesh(const std::string &file_name) {
     for(unsigned int vi = 0; vi < mesh->mNumVertices; vi++) {
       if(mesh->HasPositions()) {
           const aiVector3D *vp = &(mesh->mVertices[vi]);
-          printf ("vp %i (%f,%f,%f)\n", vi, vp->x, vp->y, vp->z);
+          //printf ("vp %i (%f,%f,%f)\n", vi, vp->x, vp->y, vp->z);
           m_verticies.push_back(vp->x);
           m_verticies.push_back(vp->y);
           m_verticies.push_back(vp->z);
@@ -48,7 +48,7 @@ Mesh::Mesh(const std::string &file_name) {
           m_indeces.push_back(vf->mIndices[0]);
           m_indeces.push_back(vf->mIndices[1]);
           m_indeces.push_back(vf->mIndices[2]);
-          printf("vi %d %d %d\n", vf->mIndices[0], vf->mIndices[1], vf->mIndices[2]);
+          //printf("vi %d %d %d\n", vf->mIndices[0], vf->mIndices[1], vf->mIndices[2]);
           m_indeces_count += 3;
         }
       }
