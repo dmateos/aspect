@@ -8,7 +8,8 @@
 
 struct game_state {
   aspect::Camera camera;
-  std::vector<aspect::ModelInstance*> instances;
+  std::vector<aspect::ModelInstance*> model_instances;
+  std::vector<aspect::CubeChunk*> cube_chunks;
   double delta_time;
 } gs;
 
@@ -87,24 +88,31 @@ int main(int argc, char **argv) {
   aspect::Mesh monkey_mesh("models/monkey.dae");
   aspect::ModelAsset monkey_asset(&monkey_mesh, &monkey_program);
   aspect::ModelInstance monkey(&monkey_asset);
-  monkey.offset_position(glm::vec3(30, 0, 0));
+  monkey.offset_position(glm::vec3(50, 0, 0));
   monkey.update();
-  gs.instances.push_back(&monkey);
+  gs.model_instances.push_back(&monkey);
 
   aspect::GLProgram chunk_program("shaders/vshader.glsl", "shaders/fshader.glsl");
-  aspect::CubeChunk chunk(&chunk_program);
-  chunk.update();
+  for(int i = 0; i < 10; i++) {
+    aspect::CubeChunk *chunk = new aspect::CubeChunk(&chunk_program, i*50, 0, 0);
+    chunk->update();
+    gs.cube_chunks.push_back(chunk);
+  }
 
   while(!glfwWindowShouldClose(window)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for(std::vector<aspect::ModelInstance*>::iterator it = gs.instances.begin();
-        it != gs.instances.end(); it++) {
-       (*it)->draw(gs.camera.matrix());
+    for(std::vector<aspect::ModelInstance*>::iterator it = gs.model_instances.begin();
+      it != gs.model_instances.end(); it++) {
+      //(*it)->draw(gs.camera.matrix());
     }
 
-    chunk.draw(gs.camera.matrix());
+    for(std::vector<aspect::CubeChunk*>::iterator it = gs.cube_chunks.begin();
+        it != gs.cube_chunks.end(); it++) {
+      (*it)->draw(gs.camera.matrix());
+    }
+
     handle_mouse(window);
     update_fps_counter(window);
     glfwSwapBuffers(window);
