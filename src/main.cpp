@@ -5,6 +5,7 @@
 #include "model.h"
 #include "util.h"
 #include "cube.h"
+#include "gl_window.h"
 
 struct game_state {
   aspect::Camera camera;
@@ -48,37 +49,11 @@ static void handle_mouse(GLFWwindow *window) {
 }
 
 int main(int argc, char **argv) {
-  GLFWwindow *window;
-
-  /* Setup all the opengl crap. */
-  if(!glfwInit()) {
-    std::cout << "could not start glfw3" << std::endl;
-    return 1;
-  }
-
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-  if(!(window = glfwCreateWindow(XRES, YRES, "", NULL, NULL))) {
-    std::cout << "could not make glfw window" << std::endl;
-    return 1;
-  }
-
-  glfwMakeContextCurrent(window);
-  glfwSetKeyCallback(window, key_callback);
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-  glfwSetCursorPos(window, 1024/2, 768/2);
-  glewExperimental = GL_TRUE;
-  glewInit();
-
-  //glEnable(GL_CULL_FACE);
-  //glCullFace(GL_FRONT);
-  glEnable(GL_DEPTH_TEST);
-  glDepthFunc(GL_LESS);
-  print_gl_stats();
-
+  aspect::GLWindow window(1024, 768);
+  glfwMakeContextCurrent(window.get_window());
+  glfwSetKeyCallback(window.get_window(), key_callback);
+  glfwSetInputMode(window.get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetCursorPos(window.get_window(), 1024/2, 768/2);
 
   gs.camera.set_position(glm::vec3(+0.0f, +10.0f, +0.0f));
   double currentframe = glfwGetTime();
@@ -94,16 +69,16 @@ int main(int argc, char **argv) {
 
   aspect::GLProgram chunk_program("shaders/vshader.glsl", "shaders/fshader.glsl");
   for(int i = 0; i < 10; i++) {
-    aspect::CubeChunk *chunk = new aspect::CubeChunk(&chunk_program, i*50, 0, 0);
+    aspect::CubeChunk *chunk = new aspect::CubeChunk(&chunk_program, i*35, 0, 0);
     chunk->update();
     gs.cube_chunks.push_back(chunk);
   }
 
-  while(!glfwWindowShouldClose(window)) {
+  while(!glfwWindowShouldClose(window.get_window())) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for(std::vector<aspect::ModelInstance*>::iterator it = gs.model_instances.begin();
+    for(auto it = gs.model_instances.begin();
       it != gs.model_instances.end(); it++) {
       //(*it)->draw(gs.camera.matrix());
     }
@@ -113,9 +88,9 @@ int main(int argc, char **argv) {
       (*it)->draw(gs.camera.matrix());
     }
 
-    handle_mouse(window);
-    update_fps_counter(window);
-    glfwSwapBuffers(window);
+    handle_mouse(window.get_window());
+    update_fps_counter(window.get_window());
+    glfwSwapBuffers(window.get_window());
     glfwPollEvents();
 
     currentframe = glfwGetTime();
@@ -123,6 +98,5 @@ int main(int argc, char **argv) {
     lastframe = currentframe;
   }
 
-  glfwTerminate();
   return 0;
 }

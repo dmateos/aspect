@@ -43,36 +43,42 @@ void CubeChunk::update() {
     for(int yp = 0, y = 0; yp < CCOUNTY; yp += 1, y += CSIZE+CSEP) {
       for(int zp = 0, z = 0; zp < CCOUNTZ; zp +=1, z += CSIZE+CSEP) {
         if(m_cube[xp][yp][zp] == 1) {
+          //first
           push_three(verticies, x+0.0f, y+0.0f, z+0.0f);
           push_three(verticies, x+0.0f, y+0.0f, z+CSIZE);
           push_three(verticies, x+0.0f, y+CSIZE, z+CSIZE);
           push_three(verticies, x+CSIZE, y+CSIZE, z+0.0f);
           push_three(verticies, x+0.0f, y+0.0f, z+0.0f);
           push_three(verticies, x+0.0f, y+CSIZE, z+0.0f);
+          //second
           push_three(verticies, x+CSIZE, y+0.0f, z+CSIZE);
           push_three(verticies, x+0.0f,y+0.0f,z+0.0f);
           push_three(verticies, x+CSIZE, y+0.0f,z+0.0f);
           push_three(verticies, x+CSIZE, y+CSIZE, z+0.0f);
           push_three(verticies, x+CSIZE, y+0.0f, z+0.0f);
           push_three(verticies, x+0.0f,y+0.0f, z+0.0f);
+          //third
           push_three(verticies, x+0.0f, y+0.0f, z+0.0f);
           push_three(verticies, x+0.0f, y+CSIZE, z+CSIZE);
           push_three(verticies, x+0.0f, y+CSIZE, z+0.0f);
           push_three(verticies, x+CSIZE, y+0.0f, z+CSIZE);
           push_three(verticies, x+0.0f, y+0.0f, z+CSIZE);
           push_three(verticies, x+0.0f, y+0.0f, z+0.0f);
+          //forth
           push_three(verticies, x+0.0f, y+CSIZE, z+CSIZE);
           push_three(verticies, x+0.0f, y+0.0f, z+CSIZE);
           push_three(verticies, x+CSIZE, y+0.0f, z+CSIZE);
           push_three(verticies, x+CSIZE, y+CSIZE, z+CSIZE);
           push_three(verticies, x+CSIZE, y+0.0f, z+0.0f);
           push_three(verticies, x+CSIZE, y+CSIZE, z+0.0f);
+          //fith
           push_three(verticies, x+CSIZE, y+0.0f, z+0.0f);
           push_three(verticies, x+CSIZE, y+CSIZE, z+CSIZE);
           push_three(verticies, x+CSIZE, y+0.0f, z+CSIZE);
           push_three(verticies, x+CSIZE, y+CSIZE, z+CSIZE);
           push_three(verticies, x+CSIZE, y+CSIZE, z+0.0f);
           push_three(verticies, x+0.0f, y+CSIZE,z+0.0f);
+          //six
           push_three(verticies, x+CSIZE, y+CSIZE, z+CSIZE);
           push_three(verticies, x+0.0f, y+CSIZE, z+0.0f);
           push_three(verticies, x+0.0f, y+CSIZE, z+CSIZE);
