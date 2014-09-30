@@ -21,6 +21,6 @@ namespace aspect {
       GLuint make_shader(const std::string &path, GLenum stype) const;
       GLint make_program(GLint vshader, GLint fshader) const;
     };
-};
+}
 
 #endif

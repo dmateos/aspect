@@ -7,7 +7,7 @@
 using namespace aspect;
 
 CubeChunk::CubeChunk(GLProgram *program, float xoffset, float yoffset, float zoffset) :
-  program(program), xoffset(xoffset), yoffset(yoffset), zoffset(zoffset) {
+  xoffset(xoffset), yoffset(yoffset), zoffset(zoffset), program(program) {
   for(int x = 0; x < CCOUNTX; x++) {
     for(int y = 0; y < CCOUNTY; y++) {
       for(int z = 0; z < CCOUNTZ; z++) {

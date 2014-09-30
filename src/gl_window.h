@@ -7,7 +7,7 @@ namespace aspect {
   class GLWindow {
     public:
       GLWindow(int w, int h);
-      GLFWwindow *get_window() { return window; };
+      GLFWwindow *get_window() { return window; }
       ~GLWindow();
     private:
       GLFWwindow *window;

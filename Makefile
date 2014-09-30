@@ -10,6 +10,7 @@ client_objects = \
 	build/cube.o \
 
 client_flags = -lglfw3 -lglew -lassimp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
+o_args = -std=c++11 -stdlib=libc++ -Wall -pedantic
 
 all: aspect
 
@@ -18,31 +19,31 @@ aspect: $(client_objects)
 	$(CXX) $(client_flags) -o $@ $(client_objects)
 
 build/main.o: src/main.cpp
-	$(CXX) -c -o $@ src/main.cpp
+	$(CXX) ${o_args} -c -o $@ src/main.cpp
 
 build/gl_program.o: src/gl_program.cpp
-	$(CXX) -c -o $@ src/gl_program.cpp
+	$(CXX) ${o_args} -c -o $@ src/gl_program.cpp
 
 build/gl_window.o: src/gl_window.cpp
-	$(CXX) -c -o $@ src/gl_window.cpp
+	$(CXX) ${o_args} -c -o $@ src/gl_window.cpp
 
 build/camera.o: src/camera.cpp
-	$(CXX) -c -o $@ src/camera.cpp
+	$(CXX) ${o_args} -c -o $@ src/camera.cpp
 
 build/mesh.o: src/mesh.cpp
-	$(CXX) -c -o $@ src/mesh.cpp
+	$(CXX) ${o_args} -c -o $@ src/mesh.cpp
 
 build/model.o: src/model.cpp
-	$(CXX) -c -o $@ src/model.cpp
+	$(CXX) ${o_args} -c -o $@ src/model.cpp
 
 build/util.o: src/util.cpp
-	$(CXX) -c -o $@ src/util.cpp
+	$(CXX) ${o_args} -c -o $@ src/util.cpp
 
 build/texture.o: src/texture.cpp
-	$(CXX) -c -o $@ src/texture.cpp
+	$(CXX) ${o_args} -c -o $@ src/texture.cpp
 
 build/cube.o: src/cube.cpp
-	$(CXX) -c -o $@ src/cube.cpp
+	$(CXX) ${o_args} -c -o $@ src/cube.cpp
 
 clean:
 	rm -rf build/*.o aspect

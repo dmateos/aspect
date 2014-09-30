@@ -44,10 +44,10 @@ ModelAsset::ModelAsset(Mesh *mesh, GLProgram *program)
 
 ModelInstance::ModelInstance(ModelAsset *asset) :
   asset(asset),
+  m_matrix(),
   m_position(0.0f, 0.0f, 0.0f),
   m_horizontalangle(0.0f),
-  m_verticalangle(0.0f),
-  m_matrix()
+  m_verticalangle(0.0f)
 {
   std::cout << "loaded new model instance" << std::endl;
 }

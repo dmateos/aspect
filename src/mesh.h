@@ -16,8 +16,8 @@ namespace aspect {
       std::vector<unsigned int> m_indeces;
 
       Mesh(const std::string &file_name);
-      int get_verticies_count() const { return m_verticies_count; }
-      int get_indeces_count() const { return m_indeces_count; }
+      unsigned int get_verticies_count() const { return m_verticies_count; }
+      unsigned int get_indeces_count() const { return m_indeces_count; }
       std::vector<float> *get_verticies() { return &m_verticies; }
       std::vector<float> *get_normals() { return &m_normals; }
       std::vector<float> *get_textures() { return &m_textures; } 

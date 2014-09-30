@@ -15,10 +15,6 @@ struct game_state {
 } gs;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-  const float step = 1.0;
-  float yrotd, xrotd;
-  bool colision = false;
-
   switch(key) {
     case GLFW_KEY_W:
       gs.camera.offset_position(gs.camera.forward(1.0f));
@@ -78,15 +74,13 @@ int main(int argc, char **argv) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for(auto it = gs.model_instances.begin();
-      it != gs.model_instances.end(); it++) {
-      //(*it)->draw(gs.camera.matrix());
-    }
+    for_each(begin(gs.model_instances), end(gs.model_instances), [](aspect::ModelInstance *instance) {
+      instance->draw(gs.camera.matrix());
+    });
 
-    for(std::vector<aspect::CubeChunk*>::iterator it = gs.cube_chunks.begin();
-        it != gs.cube_chunks.end(); it++) {
-      (*it)->draw(gs.camera.matrix());
-    }
+    for_each(begin(gs.cube_chunks), end(gs.cube_chunks), [](aspect::CubeChunk *chunk) { 
+      chunk->draw(gs.camera.matrix());   
+    });
 
     handle_mouse(window.get_window());
     update_fps_counter(window.get_window());

@@ -18,11 +18,11 @@ namespace aspect {
       ~CubeChunk();
       void update();
       void draw(glm::mat4 camera) const;
+      float xoffset, yoffset, zoffset;
     private:
       int m_cube[CCOUNTX][CCOUNTY][CCOUNTZ];
       GLuint m_vbo, m_vao, vbolen;
       GLProgram *program;
-      float xoffset, yoffset, zoffset;
       glm::mat4 translate;
   };
 }
