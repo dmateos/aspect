@@ -65,7 +65,7 @@ glm::vec3 ModelInstance::get_position() const {
 }
 
 void ModelInstance::scale(float n) {
-
+  (void)n;
 }
 
 glm::mat4 ModelInstance::orientation() const {

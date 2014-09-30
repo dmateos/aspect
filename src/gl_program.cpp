@@ -3,16 +3,16 @@
 using namespace aspect;
 
 GLProgram::GLProgram(const std::string &vshader, const std::string &fshader) {
-  if((m_vshader = make_shader(vshader, GL_VERTEX_SHADER)) == -1) {
+  if((m_vshader = make_shader(vshader, GL_VERTEX_SHADER)) == 0) {
     std::cout << "could not load vshader " << vshader << std::endl;
   }
 
-  if((m_fshader = make_shader(fshader, GL_FRAGMENT_SHADER)) == -1) {
+  if((m_fshader = make_shader(fshader, GL_FRAGMENT_SHADER)) == 0) {
     std::cout << "could not load fshader " << fshader << std::endl;
   }
   //todo EXCEPTIONS
 
-  if((m_program = make_program(m_vshader, m_fshader)) == -1) {
+  if((m_program = make_program(m_vshader, m_fshader)) == 0) {
     std::cout << "could not make program" << std::endl;
   }
 
@@ -60,7 +60,7 @@ GLuint GLProgram::make_shader(const std::string &path, GLenum stype) const {
   if(!shader_ok) {
     std::cout << path << " did not compile" << std::endl;
     glDeleteShader(shader);
-    return -1;
+    return 0;
   }
 
   return shader;
@@ -78,7 +78,7 @@ GLint GLProgram::make_program(GLint vshader, GLint fshader) const {
   glGetProgramiv(shader_program, GL_LINK_STATUS, &program_ok);
   if(!program_ok) {
     std::cout << "program did not compile" << std::endl;
-    return -1;
+    return 0;
   }
 
   return shader_program;

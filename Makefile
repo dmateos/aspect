@@ -10,7 +10,7 @@ client_objects = \
 	build/cube.o \
 
 client_flags = -lglfw3 -lglew -lassimp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
-o_args = -std=c++11 -stdlib=libc++ -Wall -pedantic
+o_args = -std=c++11 -stdlib=libc++ -Wall -Wextra -Wwrite-strings -Werror
 
 all: aspect
 

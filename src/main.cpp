@@ -15,6 +15,11 @@ struct game_state {
 } gs;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  (void)window;
+  (void)scancode;
+  (void)action;
+  (void) mods;
+
   switch(key) {
     case GLFW_KEY_W:
       gs.camera.offset_position(gs.camera.forward(1.0f));
@@ -44,7 +49,7 @@ static void handle_mouse(GLFWwindow *window) {
   glfwSetCursorPos(window, 0.0f, 0.0f);
 }
 
-int main(int argc, char **argv) {
+int main() {
   aspect::GLWindow window(1024, 768);
   glfwMakeContextCurrent(window.get_window());
   glfwSetKeyCallback(window.get_window(), key_callback);
