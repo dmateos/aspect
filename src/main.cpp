@@ -49,6 +49,14 @@ static void handle_mouse(GLFWwindow *window) {
   glfwSetCursorPos(window, 0.0f, 0.0f);
 }
 
+static void walk(aspect::ModelInstance *instance) {
+  float zmax = -100;
+  if(instance->get_position().z > zmax) {
+    instance->offset_position(glm::vec3(0, 0, -1));
+    instance->update();
+  }
+}
+
 int main() {
   aspect::GLWindow window(1024, 768);
   glfwMakeContextCurrent(window.get_window());
@@ -64,7 +72,7 @@ int main() {
   aspect::Mesh monkey_mesh("models/monkey.dae");
   aspect::ModelAsset monkey_asset(&monkey_mesh, &monkey_program);
   aspect::ModelInstance monkey(&monkey_asset);
-  monkey.offset_position(glm::vec3(50, 0, 0));
+  monkey.offset_position(glm::vec3(0, 0, -10));
   monkey.update();
   gs.model_instances.push_back(&monkey);
 
@@ -81,6 +89,7 @@ int main() {
 
     for_each(begin(gs.model_instances), end(gs.model_instances), [](aspect::ModelInstance *instance) {
       instance->draw(gs.camera.matrix());
+      walk(instance);
     });
 
     for_each(begin(gs.cube_chunks), end(gs.cube_chunks), [](aspect::CubeChunk *chunk) { 

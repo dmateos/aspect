@@ -1,4 +1,4 @@
-client_objects = \
+objects = \
 	build/main.o \
 	build/gl_program.o \
 	build/gl_window.o \
@@ -9,41 +9,41 @@ client_objects = \
 	build/texture.o \
 	build/cube.o \
 
-client_flags = -lglfw3 -lglew -lassimp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
-o_args = -std=c++11 -stdlib=libc++ -Wall -Wextra -Wwrite-strings -Werror
+libs = -lglfw3 -lglew -lassimp -lil -lilu -lilut -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
+c_args = -std=c++11 -stdlib=libc++ -Wall -Wextra -Wwrite-strings -Werror
 
 all: aspect
 
 #Client
-aspect: $(client_objects)
-	$(CXX) $(client_flags) -o $@ $(client_objects)
+aspect: $(objects)
+	$(CXX) $(libs) -o $@ $(objects)
 
 build/main.o: src/main.cpp
-	$(CXX) ${o_args} -c -o $@ src/main.cpp
+	$(CXX) ${c_args} -c -o $@ src/main.cpp
 
 build/gl_program.o: src/gl_program.cpp
-	$(CXX) ${o_args} -c -o $@ src/gl_program.cpp
+	$(CXX) ${c_args} -c -o $@ src/gl_program.cpp
 
 build/gl_window.o: src/gl_window.cpp
-	$(CXX) ${o_args} -c -o $@ src/gl_window.cpp
+	$(CXX) ${c_args} -c -o $@ src/gl_window.cpp
 
 build/camera.o: src/camera.cpp
-	$(CXX) ${o_args} -c -o $@ src/camera.cpp
+	$(CXX) ${c_args} -c -o $@ src/camera.cpp
 
 build/mesh.o: src/mesh.cpp
-	$(CXX) ${o_args} -c -o $@ src/mesh.cpp
+	$(CXX) ${c_args} -c -o $@ src/mesh.cpp
 
 build/model.o: src/model.cpp
-	$(CXX) ${o_args} -c -o $@ src/model.cpp
+	$(CXX) ${c_args} -c -o $@ src/model.cpp
 
 build/util.o: src/util.cpp
-	$(CXX) ${o_args} -c -o $@ src/util.cpp
+	$(CXX) ${c_args} -c -o $@ src/util.cpp
 
 build/texture.o: src/texture.cpp
-	$(CXX) ${o_args} -c -o $@ src/texture.cpp
+	$(CXX) ${c_args} -c -o $@ src/texture.cpp
 
 build/cube.o: src/cube.cpp
-	$(CXX) ${o_args} -c -o $@ src/cube.cpp
+	$(CXX) ${c_args} -c -o $@ src/cube.cpp
 
 clean:
 	rm -rf build/*.o aspect
