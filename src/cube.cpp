@@ -20,10 +20,16 @@ CubeChunk::CubeChunk(GLProgram *program, float xoffset, float yoffset, float zof
   glGenVertexArrays(1, &m_vao);
   glBindVertexArray(m_vao);
   glGenBuffers(1, &m_vbo);
-
   glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+  glGenBuffers(1, &m_veo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_veo);
+
   glEnableVertexAttribArray(program->get_attrib("vp"));
-  glVertexAttribPointer(program->get_attrib("vp"), 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  glVertexAttribPointer(program->get_attrib("vp"), 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), NULL);
+
+  glEnableVertexAttribArray(program->get_attrib("tex"));
+  glVertexAttribPointer(program->get_attrib("tex"), 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 
+      (void*)(3*sizeof(float)));
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -35,56 +41,68 @@ CubeChunk::~CubeChunk() {
 
 }
 
-#define push_three(v, x,y,z)  v.push_back(x); v.push_back(y); v.push_back(z);
+#define push_three(v, x,y,z)  v.push_back(x); v.push_back(y), v.push_back(z);
+#define push_five(v, x,y,z,w,h)  v.push_back(x); v.push_back(y); v.push_back(z), v.push_back(w); v.push_back(h);
 
 void CubeChunk::update() {
   std::vector<float> verticies;
+  std::vector<unsigned short> index;
+  int vcount = 24;
+  int it = 0;
   for(int xp = 0, x = 0; xp < CCOUNTX; xp += 1, x += CSIZE+CSEP) {
     for(int yp = 0, y = 0; yp < CCOUNTY; yp += 1, y += CSIZE+CSEP) {
       for(int zp = 0, z = 0; zp < CCOUNTZ; zp +=1, z += CSIZE+CSEP) {
         if(m_cube[xp][yp][zp] == 1) {
-          //first
-          push_three(verticies, x+0.0f, y+0.0f, z+0.0f);
-          push_three(verticies, x+0.0f, y+0.0f, z+CSIZE);
-          push_three(verticies, x+0.0f, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+CSIZE, y+CSIZE, z+0.0f);
-          push_three(verticies, x+0.0f, y+0.0f, z+0.0f);
-          push_three(verticies, x+0.0f, y+CSIZE, z+0.0f);
-          //second
-          push_three(verticies, x+CSIZE, y+0.0f, z+CSIZE);
-          push_three(verticies, x+0.0f,y+0.0f,z+0.0f);
-          push_three(verticies, x+CSIZE, y+0.0f,z+0.0f);
-          push_three(verticies, x+CSIZE, y+CSIZE, z+0.0f);
-          push_three(verticies, x+CSIZE, y+0.0f, z+0.0f);
-          push_three(verticies, x+0.0f,y+0.0f, z+0.0f);
-          //third
-          push_three(verticies, x+0.0f, y+0.0f, z+0.0f);
-          push_three(verticies, x+0.0f, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+0.0f, y+CSIZE, z+0.0f);
-          push_three(verticies, x+CSIZE, y+0.0f, z+CSIZE);
-          push_three(verticies, x+0.0f, y+0.0f, z+CSIZE);
-          push_three(verticies, x+0.0f, y+0.0f, z+0.0f);
-          //forth
-          push_three(verticies, x+0.0f, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+0.0f, y+0.0f, z+CSIZE);
-          push_three(verticies, x+CSIZE, y+0.0f, z+CSIZE);
-          push_three(verticies, x+CSIZE, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+CSIZE, y+0.0f, z+0.0f);
-          push_three(verticies, x+CSIZE, y+CSIZE, z+0.0f);
-          //fith
-          push_three(verticies, x+CSIZE, y+0.0f, z+0.0f);
-          push_three(verticies, x+CSIZE, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+CSIZE, y+0.0f, z+CSIZE);
-          push_three(verticies, x+CSIZE, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+CSIZE, y+CSIZE, z+0.0f);
-          push_three(verticies, x+0.0f, y+CSIZE,z+0.0f);
-          //six
-          push_three(verticies, x+CSIZE, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+0.0f, y+CSIZE, z+0.0f);
-          push_three(verticies, x+0.0f, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+CSIZE, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+0.0f, y+CSIZE, z+CSIZE);
-          push_three(verticies, x+CSIZE, y+0.0f, z+CSIZE);
+          //front
+          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, 0.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, 1.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, 1.0f, 1.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, 0.0f, 1.0f);
+
+          //top
+          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, 0.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, 1.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, 1.0f, 1.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, 0.0f, 1.0f);
+
+          //back
+          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, 0.0f, 0.0f);
+          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, 1.0f, 0.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, 1.0f, 1.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, 0.0f, 1.0f);
+
+          //bottom
+          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, 0.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, 1.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, 1.0f, 1.0f);
+          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, 0.0f, 1.0f);
+
+          //left
+          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, 0.0f, 0.0f);
+          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, 1.0f, 0.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, 1.0f, 1.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, 0.0f, 1.0f);
+
+          //right
+          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, 0.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, 1.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, 1.0f, 1.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, 0.0f, 1.0f);
+
+          push_three(index, it*vcount+0, it*vcount+1, it*vcount+2);
+          push_three(index, it*vcount+2, it*vcount+3, it*vcount+0);
+          push_three(index, it*vcount+4, it*vcount+5, it*vcount+6);
+          push_three(index, it*vcount+6, it*vcount+7, it*vcount+4);
+          push_three(index, it*vcount+8, it*vcount+9, it*vcount+10);
+          push_three(index, it*vcount+10, it*vcount+11, it*vcount+8);
+          push_three(index, it*vcount+12, it*vcount+13, it*vcount+14);
+          push_three(index, it*vcount+14, it*vcount+15, it*vcount+12);
+          push_three(index, it*vcount+16, it*vcount+17, it*vcount+18);
+          push_three(index, it*vcount+18, it*vcount+19, it*vcount+16);
+          push_three(index, it*vcount+20, it*vcount+21, it*vcount+22);
+          push_three(index, it*vcount+22, it*vcount+23, it*vcount+20);
+
+          it +=1;
         }
       }
     }
@@ -93,9 +111,12 @@ void CubeChunk::update() {
   glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
   //TODO is static draw the best? also is there a more dedicated function to do this?
   glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(float), &verticies[0], GL_STATIC_DRAW);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_veo);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(unsigned short), &index[0], GL_STATIC_DRAW);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  vbolen = verticies.size();
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  veolen = index.size();
 
   printf("updated chunk with %d cubes with %zu verticies(%zu bytes)\n", CCOUNTX*CCOUNTY*CCOUNTZ, verticies.size(),
           verticies.size()*sizeof(float));
@@ -106,6 +127,7 @@ void CubeChunk::draw(glm::mat4 camera) const {
   program->set_uniform("camera", camera);
   program->set_uniform("translate", translate);
   glBindVertexArray(m_vao);
-  glDrawArrays(GL_TRIANGLES, 0, vbolen);
+  //glDrawArrays(GL_TRIANGLES, 0, vbolen);
+  glDrawElements(GL_TRIANGLES, veolen, GL_UNSIGNED_SHORT, 0);
   glBindVertexArray(0);
 }

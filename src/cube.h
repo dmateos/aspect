@@ -5,10 +5,10 @@
 #include "gl_program.h"
 #include <vector>
 
-#define CCOUNTX 16   //wide
-#define CCOUNTY 16   //deep
-#define CCOUNTZ 16   //long
-#define CSIZE 2.0f    //size of cubes
+#define CCOUNTX 6   //wide
+#define CCOUNTY 6  //deep
+#define CCOUNTZ 6   //long
+#define CSIZE 1.0f    //size of cubes
 #define CSEP 0.0f     //seperation between cubes
 
 namespace aspect {
@@ -21,7 +21,7 @@ namespace aspect {
       float xoffset, yoffset, zoffset;
     private:
       int m_cube[CCOUNTX][CCOUNTY][CCOUNTZ];
-      GLuint m_vbo, m_vao, vbolen;
+      GLuint m_vbo, m_vao, m_veo, veolen;
       GLProgram *program;
       glm::mat4 translate;
   };

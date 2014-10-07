@@ -6,6 +6,7 @@
 #include "util.h"
 #include "cube.h"
 #include "gl_window.h"
+#include "texture.h"
 
 struct game_state {
   aspect::Camera camera;
@@ -58,16 +59,18 @@ static void walk(aspect::ModelInstance *instance) {
 }
 
 int main() {
-  aspect::GLWindow window(1024, 768);
+  aspect::GLWindow window(XRES, YRES);
   glfwMakeContextCurrent(window.get_window());
   glfwSetKeyCallback(window.get_window(), key_callback);
   glfwSetInputMode(window.get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-  glfwSetCursorPos(window.get_window(), 1024/2, 768/2);
+  glfwSetCursorPos(window.get_window(), XRES/2, YRES/2);
 
   gs.camera.set_position(glm::vec3(+0.0f, +10.0f, +0.0f));
   double currentframe = glfwGetTime();
   double lastframe = currentframe;
 
+  aspect::Texture texture("textures/diamond.png");
+//  aspect::Texture texture("textures/dirt.png");
   aspect::GLProgram monkey_program("shaders/vshader-nm.glsl", "shaders/fshader-nm.glsl");
   aspect::Mesh monkey_mesh("models/monkey.dae");
   aspect::ModelAsset monkey_asset(&monkey_mesh, &monkey_program);
@@ -77,11 +80,17 @@ int main() {
   gs.model_instances.push_back(&monkey);
 
   aspect::GLProgram chunk_program("shaders/vshader.glsl", "shaders/fshader.glsl");
-  for(int i = 0; i < 10; i++) {
-    aspect::CubeChunk *chunk = new aspect::CubeChunk(&chunk_program, i*35, 0, 0);
-    chunk->update();
-    gs.cube_chunks.push_back(chunk);
+  for(int x = 0; x < 10; x++) {
+    for(int y = 0; y < 10; y++) {
+      for(int z = 0; z< 10; z++) {
+        aspect::CubeChunk *chunk = new aspect::CubeChunk(&chunk_program, x*7, y*7, z*7);
+        chunk->update();
+        gs.cube_chunks.push_back(chunk);
+      }
+    }
   }
+
+  texture.bind_texture();
 
   while(!glfwWindowShouldClose(window.get_window())) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
