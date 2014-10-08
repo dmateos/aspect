@@ -53,15 +53,15 @@ static void handle_mouse(GLFWwindow *window) {
 bool flip = true;
 static void walk(aspect::ModelInstance *instance) {
   if(flip == true) {
-    instance->offset_position(glm::vec3(0, 0, -1));
+    instance->offset_position(glm::vec3(0, 0, -0.1));
     instance->update();
-    if(instance->get_position().z == -150) {
+    if(instance->get_position().z < 0) {
       flip = false;
     }
   } else {
-    instance->offset_position(glm::vec3(0, 0, +1));
+    instance->offset_position(glm::vec3(0, 0, +0.1));
     instance->update();
-    if(instance->get_position().z == 10) {
+    if(instance->get_position().z > 60) {
       flip = true;
     }
   }
@@ -82,15 +82,15 @@ int main() {
   aspect::Mesh monkey_mesh("models/monkey.dae");
   aspect::ModelAsset monkey_asset(&monkey_mesh, &monkey_program);
   aspect::ModelInstance monkey(&monkey_asset);
-  monkey.offset_position(glm::vec3(0, 0, -10));
+  monkey.offset_position(glm::vec3(40, 18, 60));
   monkey.update();
   gs.model_instances.push_back(&monkey);
 
   aspect::GLProgram chunk_program("shaders/vshader.glsl", "shaders/fshader.glsl");
-  for(int x = 0; x < 1; x++) {
+  for(int x = 0; x < 4; x++) {
     for(int y = 0; y < 1; y++) {
-      for(int z = 0; z< 1; z++) {
-        aspect::CubeChunk *chunk = new aspect::CubeChunk(&chunk_program, x*7, y*7, z*7);
+      for(int z = 0; z< 4; z++) {
+        aspect::CubeChunk *chunk = new aspect::CubeChunk(&chunk_program, x*16, y*16, z*16);
         chunk->update();
         gs.cube_chunks.push_back(chunk);
       }

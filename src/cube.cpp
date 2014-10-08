@@ -8,7 +8,7 @@ using namespace aspect;
 
 CubeChunk::CubeChunk(GLProgram *program, float xoffset, float yoffset, float zoffset) :
   xoffset(xoffset), yoffset(yoffset), zoffset(zoffset), program(program) {
-  srand(1);
+  srand(time(NULL));
   for(int x = 0; x < CCOUNTX; x++) {
     for(int y = 0; y < CCOUNTY; y++) {
       for(int z = 0; z < CCOUNTZ; z++) {
@@ -36,6 +36,7 @@ CubeChunk::CubeChunk(GLProgram *program, float xoffset, float yoffset, float zof
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   texture = new TextureAtlas("textures/atlastest.png");
+  texture->bind_texture();
   printf("new cube chunk %dx%dx%d with size %g and sep %g\n", CCOUNTX, CCOUNTY, CCOUNTX, CSIZE, CSEP);
 }
 
@@ -61,7 +62,6 @@ void CubeChunk::update() {
           } else if(m_cube[xp][yp][zp] == 2) {
             tc = texture->get_tile(128, 128, 1, 0);
           }
-          printf("%f %f %f %f\n", tc[0], tc[1], tc[2], tc[3]);
           //front
           push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[0], tc[1]);
           push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[2], tc[1]);
@@ -135,7 +135,7 @@ void CubeChunk::draw(glm::mat4 camera) const {
   program->use();
   program->set_uniform("camera", camera);
   program->set_uniform("translate", translate);
-  texture->bind_texture();
+  //texture->bind_texture(); //TODO sloooow
   glBindVertexArray(m_vao);
   //glDrawArrays(GL_TRIANGLES, 0, vbolen);
   glDrawElements(GL_TRIANGLES, veolen, GL_UNSIGNED_SHORT, 0);
