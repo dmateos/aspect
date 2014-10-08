@@ -35,3 +35,17 @@ Texture::Texture(const std::string &path) {
 void Texture::bind_texture() {
   glBindTexture(GL_TEXTURE_2D, m_tex);
 }
+
+TextureAtlas::TextureAtlas(const std::string &path) : Texture(path) {
+  (void)path;
+  width = ilGetInteger(IL_IMAGE_WIDTH);
+  height = ilGetInteger(IL_IMAGE_HEIGHT);
+}
+
+glm::vec4 TextureAtlas::get_tile(int w, int h, int x, int y) const {
+  float xl = (w * x) / (float)width;
+  float yl = (h * y) / (float)height;
+  float xr = (w * x) / (float)width + (w/(float)width);
+  float yr = (h * y) / (float)height + (h/(float)height);
+  return glm::vec4(xl, yl, xr, yr);
+}

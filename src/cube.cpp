@@ -8,10 +8,11 @@ using namespace aspect;
 
 CubeChunk::CubeChunk(GLProgram *program, float xoffset, float yoffset, float zoffset) :
   xoffset(xoffset), yoffset(yoffset), zoffset(zoffset), program(program) {
+  srand(1);
   for(int x = 0; x < CCOUNTX; x++) {
     for(int y = 0; y < CCOUNTY; y++) {
       for(int z = 0; z < CCOUNTZ; z++) {
-        m_cube[x][y][z] = 1;
+        m_cube[x][y][z] = rand() % 3;
       }
     }
   }
@@ -34,11 +35,12 @@ CubeChunk::CubeChunk(GLProgram *program, float xoffset, float yoffset, float zof
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+  texture = new TextureAtlas("textures/atlastest.png");
   printf("new cube chunk %dx%dx%d with size %g and sep %g\n", CCOUNTX, CCOUNTY, CCOUNTX, CSIZE, CSEP);
 }
 
 CubeChunk::~CubeChunk() {
-
+  delete texture;
 }
 
 #define push_three(v, x,y,z)  v.push_back(x); v.push_back(y), v.push_back(z);
@@ -52,42 +54,49 @@ void CubeChunk::update() {
   for(int xp = 0, x = 0; xp < CCOUNTX; xp += 1, x += CSIZE+CSEP) {
     for(int yp = 0, y = 0; yp < CCOUNTY; yp += 1, y += CSIZE+CSEP) {
       for(int zp = 0, z = 0; zp < CCOUNTZ; zp +=1, z += CSIZE+CSEP) {
-        if(m_cube[xp][yp][zp] == 1) {
+        if(m_cube[xp][yp][zp]) {
+          glm::vec4 tc;
+          if(m_cube[xp][yp][zp] == 1) {
+            tc = texture->get_tile(128, 128, 0, 0);
+          } else if(m_cube[xp][yp][zp] == 2) {
+            tc = texture->get_tile(128, 128, 1, 0);
+          }
+          printf("%f %f %f %f\n", tc[0], tc[1], tc[2], tc[3]);
           //front
-          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, 0.0f, 0.0f);
-          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, 1.0f, 0.0f);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, 1.0f, 1.0f);
-          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, 0.0f, 1.0f);
+          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[0], tc[1]);
+          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[2], tc[1]);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, tc[2], tc[3]);
+          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, tc[0], tc[3]);
 
           //top
-          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, 0.0f, 0.0f);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, 1.0f, 0.0f);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, 1.0f, 1.0f);
-          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, 0.0f, 1.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, tc[0], tc[1]);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, tc[2], tc[1]);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, tc[2], tc[3]);
+          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f,  tc[0], tc[3]);
 
           //back
-          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, 0.0f, 0.0f);
-          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, 1.0f, 0.0f);
-          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, 1.0f, 1.0f);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, 0.0f, 1.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, tc[0], tc[1]);
+          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, tc[2], tc[1]);
+          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, tc[2], tc[3]);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, tc[0], tc[3]);
 
           //bottom
-          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, 0.0f, 0.0f);
-          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, 1.0f, 0.0f);
-          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, 1.0f, 1.0f);
-          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, 0.0f, 1.0f);
+          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, tc[0], tc[1]);
+          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, tc[2], tc[1]);
+          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[2], tc[3]);
+          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[0], tc[3]);
 
           //left
-          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, 0.0f, 0.0f);
-          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, 1.0f, 0.0f);
-          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, 1.0f, 1.0f);
-          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, 0.0f, 1.0f);
+          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, tc[0], tc[1]);
+          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[2], tc[1]);
+          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, tc[2], tc[3]);
+          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, tc[0], tc[3]);
 
           //right
-          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, 0.0f, 0.0f);
-          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, 1.0f, 0.0f);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, 1.0f, 1.0f);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, 0.0f, 1.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[0], tc[1]);
+          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, tc[2], tc[1]);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, tc[2], tc[3]);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, tc[0], tc[3]);
 
           push_three(index, it*vcount+0, it*vcount+1, it*vcount+2);
           push_three(index, it*vcount+2, it*vcount+3, it*vcount+0);
@@ -126,6 +135,7 @@ void CubeChunk::draw(glm::mat4 camera) const {
   program->use();
   program->set_uniform("camera", camera);
   program->set_uniform("translate", translate);
+  texture->bind_texture();
   glBindVertexArray(m_vao);
   //glDrawArrays(GL_TRIANGLES, 0, vbolen);
   glDrawElements(GL_TRIANGLES, veolen, GL_UNSIGNED_SHORT, 0);
