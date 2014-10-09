@@ -68,6 +68,7 @@ static void walk(aspect::ModelInstance *instance) {
 }
 
 int main() {
+  srand(time(NULL));
   aspect::GLWindow window(XRES, YRES);
   glfwMakeContextCurrent(window.get_window());
   glfwSetKeyCallback(window.get_window(), key_callback);
@@ -87,10 +88,10 @@ int main() {
   gs.model_instances.push_back(&monkey);
 
   aspect::GLProgram chunk_program("shaders/vshader.glsl", "shaders/fshader.glsl");
-  for(int x = 0; x < 4; x++) {
+  for(int x = 0; x < 16; x++) {
     for(int y = 0; y < 1; y++) {
-      for(int z = 0; z< 4; z++) {
-        aspect::CubeChunk *chunk = new aspect::CubeChunk(&chunk_program, x*16, y*16, z*16);
+      for(int z = 0; z < 16; z++) {
+        aspect::CubeChunk *chunk = new aspect::CubeChunk(&chunk_program, x*CCOUNTX, y*CCOUNTY, z*CCOUNTZ);
         chunk->update();
         gs.cube_chunks.push_back(chunk);
       }
@@ -98,7 +99,7 @@ int main() {
   }
 
   while(!glfwWindowShouldClose(window.get_window())) {
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.20, 0.6, 0.7, 0.00);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for_each(begin(gs.model_instances), end(gs.model_instances), [](aspect::ModelInstance *instance) {

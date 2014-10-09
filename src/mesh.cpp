@@ -3,8 +3,8 @@
 using namespace aspect;
 
 Mesh::Mesh(const std::string &file_name) {
-  const aiScene *scene = aiImportFile(file_name.c_str(), aiProcess_Triangulate | aiProcess_MakeLeftHanded);
-  //const aiScene *scene = aiImportFile(file_name.c_str(), aiProcess_Triangulate);
+ // const aiScene *scene = aiImportFile(file_name.c_str(), aiProcess_Triangulate | aiProcess_MakeLeftHanded);
+    const aiScene *scene = aiImportFile(file_name.c_str(), aiProcess_Triangulate);
   unsigned int g_point_count = 0;
   if(!scene) {
     fprintf(stderr, "error reading mesh %s\n", file_name.c_str());

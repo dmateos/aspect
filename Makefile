@@ -8,6 +8,7 @@ objects = \
 	build/util.o \
 	build/texture.o \
 	build/cube.o \
+	build/game.o \
 
 libs = -lglfw3 -lglew -lassimp -lil -lilu -lilut -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 c_args = -std=c++11 -stdlib=libc++ -Wall -Wextra -Wwrite-strings -Werror
@@ -44,6 +45,9 @@ build/texture.o: src/texture.cpp
 
 build/cube.o: src/cube.cpp
 	$(CXX) ${c_args} -c -o $@ src/cube.cpp
+
+build/game.o: src/game.cpp
+	$(CXX) ${c_args} -c -o $@ src/game.cpp
 
 clean:
 	rm -rf build/*.o aspect
