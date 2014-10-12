@@ -23,16 +23,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
   switch(key) {
     case GLFW_KEY_W:
-      gs.camera.offset_position(gs.camera.forward(1.0f));
+      gs.camera.offset_position(gs.camera.forward(0.5f));
       break;
     case GLFW_KEY_A:
-      gs.camera.offset_position(-gs.camera.right(1.0f));
+      gs.camera.offset_position(-gs.camera.right(0.5f));
       break;
     case GLFW_KEY_S:
-      gs.camera.offset_position(-gs.camera.forward(1.0f));
+      gs.camera.offset_position(-gs.camera.forward(0.5f));
       break;
     case GLFW_KEY_D:
-      gs.camera.offset_position(gs.camera.right(1.0f));
+      gs.camera.offset_position(gs.camera.right(0.5f));
       break;
     case GLFW_KEY_P:
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
@@ -83,7 +83,7 @@ int main() {
   aspect::Mesh monkey_mesh("models/monkey.dae");
   aspect::ModelAsset monkey_asset(&monkey_mesh, &monkey_program);
   aspect::ModelInstance monkey(&monkey_asset);
-  monkey.offset_position(glm::vec3(40, 18, 60));
+  monkey.offset_position(glm::vec3(40, 6, 60));
   monkey.update();
   gs.model_instances.push_back(&monkey);
 

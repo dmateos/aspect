@@ -6,9 +6,9 @@
 #include "texture.h"
 #include <vector>
 
-#define CCOUNTX 32   //wide
+#define CCOUNTX 16   //wide
 #define CCOUNTY 4  //deep
-#define CCOUNTZ 32   //long
+#define CCOUNTZ 16   //long
 #define CSIZE 1.0f    //size of cubes
 #define CSEP 0.0f     //seperation between cubes
 

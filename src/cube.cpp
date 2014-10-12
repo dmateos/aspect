@@ -11,7 +11,7 @@ CubeChunk::CubeChunk(GLProgram *program, float xoffset, float yoffset, float zof
   for(int x = 0; x < CCOUNTX; x++) {
     for(int y = 0; y < CCOUNTY; y++) {
       for(int z = 0; z < CCOUNTZ; z++) {
-        m_cube[x][y][z] = rand() % 3;
+        m_cube[x][y][z] = rand() % 4;
       }
     }
   }
@@ -34,7 +34,7 @@ CubeChunk::CubeChunk(GLProgram *program, float xoffset, float yoffset, float zof
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  texture = new TextureAtlas("textures/atlastest2.png");
+  texture = new TextureAtlas("textures/atlastest3.png");
   texture->bind_texture();
   printf("new cube chunk %dx%dx%d with size %g and sep %g\n", CCOUNTX, CCOUNTY, CCOUNTX, CSIZE, CSEP);
 }
@@ -57,9 +57,11 @@ void CubeChunk::update() {
         if(m_cube[xp][yp][zp]) {
           glm::vec4 tc;
           if(m_cube[xp][yp][zp] == 1) {
-            tc = texture->get_tile(32, 32, 0, 3);
+            tc = texture->get_tile(32, 32, 0, 0);
           } else if(m_cube[xp][yp][zp] == 2) {
-            tc = texture->get_tile(32, 32, 2, 9);
+            tc = texture->get_tile(32, 32, 2, 0);
+          } else if(m_cube[xp][yp][zp] == 3) {
+            tc = texture->get_tile(32, 32, 0, 2);
           }
           //front
           push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[0], tc[1]);

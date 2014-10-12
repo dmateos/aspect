@@ -27,7 +27,7 @@ Texture::Texture(const std::string &path) {
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 
       0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
 
-  glGenerateMipmap(GL_TEXTURE_2D);
+  //glGenerateMipmap(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, 0);
   printf("loaded texture %s\n", path.c_str());
 }
