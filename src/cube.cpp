@@ -25,11 +25,15 @@ CubeChunk::CubeChunk(GLProgram *program, float xoffset, float yoffset, float zof
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_veo);
 
   glEnableVertexAttribArray(program->get_attrib("vp"));
-  glVertexAttribPointer(program->get_attrib("vp"), 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), NULL);
+  glVertexAttribPointer(program->get_attrib("vp"), 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), NULL);
 
   glEnableVertexAttribArray(program->get_attrib("tex"));
-  glVertexAttribPointer(program->get_attrib("tex"), 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 
+  glVertexAttribPointer(program->get_attrib("tex"), 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), 
       (void*)(3*sizeof(float)));
+
+  glEnableVertexAttribArray(program->get_attrib("nm"));
+  glVertexAttribPointer(program->get_attrib("nm"), 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 
+      (void*)(5*sizeof(float)));
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -44,7 +48,10 @@ CubeChunk::~CubeChunk() {
 }
 
 #define push_three(v, x,y,z)  v.push_back(x); v.push_back(y), v.push_back(z);
-#define push_five(v, x,y,z,w,h)  v.push_back(x); v.push_back(y); v.push_back(z), v.push_back(w); v.push_back(h);
+#define push_five(v, x,y,z,w,h,xn,yn,zn)  \
+              v.push_back(x); v.push_back(y); v.push_back(z), \
+              v.push_back(w); v.push_back(h), \
+              v.push_back(xn), v.push_back(yn), v.push_back(zn); \
 
 void CubeChunk::update() {
   std::vector<float> verticies;
@@ -63,46 +70,47 @@ void CubeChunk::update() {
           } else if(m_cube[xp][yp][zp] == 3) {
             tc = texture->get_tile(32, 32, 0, 2);
           }
+          //3 verticies, two text coords and three normal verticies
           //front
-          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[0], tc[1]);
-          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[2], tc[1]);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, tc[2], tc[3]);
-          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, tc[0], tc[3]);
+          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[0], tc[1], 0.0f, 0.0f, 1.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[2], tc[1], 0.0f, 0.0f, 1.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, tc[2], tc[3], 0.0f, 0.0f, 1.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, tc[0], tc[3], 0.0f, 0.0f, 1.0f);
           push_three(index, it*vcount+0, it*vcount+1, it*vcount+2);
           push_three(index, it*vcount+2, it*vcount+3, it*vcount+0);
           //top
-          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, tc[0], tc[1]);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, tc[2], tc[1]);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, tc[2], tc[3]);
-          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f,  tc[0], tc[3]);
+          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, tc[0], tc[1], 0.0f, 1.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, tc[2], tc[1], 0.0f, 1.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, tc[2], tc[3], 0.0f, 1.0f, 0.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f,  tc[0], tc[3], 0.0f, 1.0f, 0.0f);
           push_three(index, it*vcount+4, it*vcount+5, it*vcount+6);
           push_three(index, it*vcount+6, it*vcount+7, it*vcount+4);
           //back
-          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, tc[0], tc[1]);
-          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, tc[2], tc[1]);
-          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, tc[2], tc[3]);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, tc[0], tc[3]);
+          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, tc[0], tc[1], 0.0f, 0.0f, -1.0f);
+          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, tc[2], tc[1], 0.0f, 0.0f, -1.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, tc[2], tc[3], 0.0f, 0.0f, -1.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, tc[0], tc[3], 0.0f, 0.0f, -1.0f);
           push_three(index, it*vcount+8, it*vcount+9, it*vcount+10);
           push_three(index, it*vcount+10, it*vcount+11, it*vcount+8);
           //bottom
-          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, tc[0], tc[1]);
-          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, tc[2], tc[1]);
-          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[2], tc[3]);
-          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[0], tc[3]);
+          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, tc[0], tc[1], 0.0f, -1.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, tc[2], tc[1], 0.0f, -1.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[2], tc[3], 0.0f, -1.0f, 0.0f);
+          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[0], tc[3], 0.0f, -1.0f, 0.0f);
           push_three(index, it*vcount+12, it*vcount+13, it*vcount+14);
           push_three(index, it*vcount+14, it*vcount+15, it*vcount+12);
           //left
-          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, tc[0], tc[1]);
-          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[2], tc[1]);
-          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, tc[2], tc[3]);
-          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, tc[0], tc[3]);
+          push_five(verticies, x+0.0f, y+0.0f, z+0.0f, tc[0], tc[1], -1.0f, 0.0f, 0.0f);
+          push_five(verticies, x+0.0f, y+0.0f, z+CSIZE, tc[2], tc[1], -1.0f, 0.0f, 0.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+CSIZE, tc[2], tc[3], -1.0f, 0.0f, 0.0f);
+          push_five(verticies, x+0.0f, y+CSIZE, z+0.0f, tc[0], tc[3], -1.0f, 0.0f, 0.0f);
           push_three(index, it*vcount+16, it*vcount+17, it*vcount+18);
           push_three(index, it*vcount+18, it*vcount+19, it*vcount+16);
           //right
-          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[0], tc[1]);
-          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, tc[2], tc[1]);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, tc[2], tc[3]);
-          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, tc[0], tc[3]);
+          push_five(verticies, x+CSIZE, y+0.0f, z+CSIZE, tc[0], tc[1], 1.0f, 0.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+0.0f, z+0.0f, tc[2], tc[1], 1.0f, 0.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+0.0f, tc[2], tc[3], 1.0f, 0.0f, 0.0f);
+          push_five(verticies, x+CSIZE, y+CSIZE, z+CSIZE, tc[0], tc[3], 1.0f, 0.0f, 0.0f);
           push_three(index, it*vcount+20, it*vcount+21, it*vcount+22);
           push_three(index, it*vcount+22, it*vcount+23, it*vcount+20);
 
