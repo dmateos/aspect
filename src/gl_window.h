@@ -9,10 +9,10 @@ namespace aspect {
       GLWindow(int w, int h);
       GLFWwindow *get_window() { return window; }
       ~GLWindow();
+      void update_fps_counter() const;
     private:
       GLFWwindow *window;
       void print_gl_stats() const;
-      void update_fps_counter() const;
   };
 }
 

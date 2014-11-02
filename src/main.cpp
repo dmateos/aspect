@@ -87,7 +87,7 @@ int main() {
   monkey.update();
   gs.model_instances.push_back(&monkey);
 
-  aspect::GLProgram chunk_program("shaders/vshader.glsl", "shaders/fshader.glsl");
+  aspect::GLProgram chunk_program("shaders/vshader-tex-light.glsl", "shaders/fshader-tex-light.glsl");
   for(int x = 0; x < 16; x++) {
     for(int y = 0; y < 1; y++) {
       for(int z = 0; z < 16; z++) {
@@ -98,8 +98,8 @@ int main() {
     }
   }
 
+  glClearColor(0.20, 0.6, 0.7, 0.00);
   while(!glfwWindowShouldClose(window.get_window())) {
-    glClearColor(0.20, 0.6, 0.7, 0.00);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for_each(begin(gs.model_instances), end(gs.model_instances), [](aspect::ModelInstance *instance) {
@@ -113,6 +113,7 @@ int main() {
 
     handle_mouse(window.get_window());
     update_fps_counter(window.get_window());
+    window.update_fps_counter();
     glfwSwapBuffers(window.get_window());
     glfwPollEvents();
 

@@ -4,19 +4,18 @@ using namespace aspect;
 
 GLProgram::GLProgram(const std::string &vshader, const std::string &fshader) {
   if((m_vshader = make_shader(vshader, GL_VERTEX_SHADER)) == 0) {
-    std::cout << "could not load vshader " << vshader << std::endl;
+    printf("could not load vshader %s\n", vshader.c_str());
   }
 
   if((m_fshader = make_shader(fshader, GL_FRAGMENT_SHADER)) == 0) {
-    std::cout << "could not load fshader " << fshader << std::endl;
+    printf("could not load fshader %s\n", fshader.c_str());
   }
-  //todo EXCEPTIONS
 
   if((m_program = make_program(m_vshader, m_fshader)) == 0) {
-    std::cout << "could not make program" << std::endl;
+    printf("could not make program\n");
   }
 
-  std::cout << "loaded program with shader " << vshader << " and " << fshader << std::endl;;
+  printf("loaded progam with shader %s and %s\n", vshader.c_str(), fshader.c_str());
 }
 
 void GLProgram::use() {
@@ -58,7 +57,7 @@ GLuint GLProgram::make_shader(const std::string &path, GLenum stype) const {
   /* Check for compile issues. */
   glGetShaderiv(shader, GL_COMPILE_STATUS, &shader_ok);
   if(!shader_ok) {
-    std::cout << path << " did not compile" << std::endl;
+    printf("%s did not compile\n", path.c_str());
     glDeleteShader(shader);
     return 0;
   }
@@ -77,7 +76,7 @@ GLint GLProgram::make_program(GLint vshader, GLint fshader) const {
   /* Did it work? */
   glGetProgramiv(shader_program, GL_LINK_STATUS, &program_ok);
   if(!program_ok) {
-    std::cout << "program did not compile" << std::endl;
+    printf("program did not compile\n");
     return 0;
   }
 
